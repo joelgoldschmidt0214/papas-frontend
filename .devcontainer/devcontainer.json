@@ -1,0 +1,49 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+  "name": "Next.js Dev Container",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  //   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  // "image" の行をコメントアウトまたは削除し、代わりに "build" を追加
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "features": {},
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "yarn install",
+
+  // Configure tool-specific properties.
+  // VS Code / Cursorの設定
+  "customizations": {
+    "vscode": {
+      // コンテナ内で自動的にインストールさせたい拡張機能
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "github.vscode-github-actions"
+      ],
+      // コンテナ内でのみ有効にしたい設定
+      "settings": {
+        "editor.formatOnSave": true // 保存時に自動フォーマット
+      }
+    }
+  },
+
+  // ホストPCのポートをコンテナのポートに転送
+  "forwardPorts": [3000],
+
+  // コンテナ作成後に一度だけ実行されるコマンド
+  // "postCreateCommand": "npm install"
+
+  // コンテナ起動時に毎回実行されるコマンド
+  "postAttachCommand": "npm run dev"
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}
