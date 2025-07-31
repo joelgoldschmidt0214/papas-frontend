@@ -28,6 +28,9 @@
   "mounts": [
     "source=papas-frontend-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
   ],
+  // 'updateContentCommand' を使用。これはコンテナ作成時にroot権限で実行されるため、
+  // 権限の問題を回避して依存関係を確実にインストールできる。
+  "updateContentCommand": "npm install",
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
