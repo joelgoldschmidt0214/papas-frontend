@@ -1,0 +1,9 @@
+# Dockerイメージに含めたくないものを指定する
+# 開発用のnode_modulesはビルドコンテキストから除外する
+node_modules
+
+# Next.jsのビルド生成物も除外
+.next
+
+# その他
+npm-debug.log
