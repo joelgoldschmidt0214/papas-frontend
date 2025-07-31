@@ -2,9 +2,6 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Next.js Dev Container",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  //   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
-  // "image" の行をコメントアウトまたは削除し、代わりに "build" を追加
   "build": {
     "dockerfile": "../Dockerfile"
   },
@@ -24,14 +21,6 @@
       "configureZshAsDefaultShell": true
     }
   },
-  // node_modulesをコンテナ専用のボリュームにマウントし、ホストOSから隔離する
-  "mounts": [
-    "source=papas-frontend-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
-  ],
-  // 'updateContentCommand' を使用。これはコンテナ作成時にroot権限で実行されるため、
-  // 権限の問題を回避して依存関係を確実にインストールできる。
-  "updateContentCommand": "npm install",
-  // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       // コンテナ内で自動的にインストールさせたい拡張機能
@@ -65,7 +54,7 @@
     3000
   ],
   // コンテナ作成後に一度だけ実行されるコマンド
-  // "postCreateCommand": "npm install"
+  "postCreateCommand": "npm install",
   // コンテナ起動時に毎回実行されるコマンド
   "postAttachCommand": "npm run dev"
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
