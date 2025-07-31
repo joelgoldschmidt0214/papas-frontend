@@ -24,6 +24,10 @@
       "configureZshAsDefaultShell": true
     }
   },
+  // node_modulesをコンテナ専用のボリュームにマウントし、ホストOSから隔離する
+  "mounts": [
+    "source=papas-frontend-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
