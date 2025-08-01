@@ -12,7 +12,7 @@ COPY package*.json ./
 
 # 5. 依存関係のインストール
 # RUN npm ci
-RUN npm install
+# RUN npm install
 
 # 6. プロジェクト全体のソースコードをコピー
 COPY . .
