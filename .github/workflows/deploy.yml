@@ -25,6 +25,8 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.AZURE_CREDENTIALS.clientId }}
+          password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
 
       # 4. Dockerイメージをビルドしてプッシュ
       - name: Build and push Docker image
