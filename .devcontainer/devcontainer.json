@@ -3,7 +3,7 @@
 {
   "name": "Next.js Dev Container",
   "build": {
-    "dockerfile": "../Dockerfile"
+    "dockerfile": "../Dockerfile.dev"
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {

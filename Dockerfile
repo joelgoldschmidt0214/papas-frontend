@@ -1,27 +1,31 @@
-# 1. ベースイメージの指定
-FROM node:20-slim
+# ----- 1. ビルドステージ (Builder) -----
+# ここでNext.jsのビルドを行い、最適化された成果物を作成する
+FROM node:20-slim AS builder
 
-# 2. gitのインストール
-RUN apt-get update && apt-get install -y git
-
-# 3. 作業ディレクトリの指定
 WORKDIR /app
 
-# 4. 依存関係ファイルの先行コピー
+# 依存関係をインストール
 COPY package*.json ./
+RUN npm ci
 
-# 5. 依存関係のインストール
-# RUN npm ci
-# RUN npm install
-
-# 6. プロジェクト全体のソースコードをコピー
+# ソースコードをコピーして、プロダクションビルドを実行
 COPY . .
+# 環境変数が必要なビルドの場合、ここで --build-arg を使って渡す
+RUN npm run build
 
-# 7. Next.jsが使用するポートを公開
-EXPOSE 3000
 
-# 8. コンテナ起動時のデフォルトコマンド (コメントアウト)
-# Dev Containersでは postAttachCommand を使用するため、このCMDは不要。
-# このイメージを他の目的（本番実行など）で再利用する場合は、
-# その実行環境側で適切なコマンドを指定する。
-# CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+# ----- 2. 実行ステージ (Runner) -----
+# ビルドステージで作成した成果物だけを使って、軽量な本番イメージを作成する
+FROM node:20-slim AS runner
+
+WORKDIR /app
+
+# 実行に必要なファイルだけをビルドステージからコピーする
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Next.jsのプロダクションサーバーを起動する
+# package.json の "start": "next start" を実行する
+CMD ["npm", "start"]
