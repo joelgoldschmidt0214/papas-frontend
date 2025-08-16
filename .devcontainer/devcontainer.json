@@ -59,5 +59,15 @@
   "postAttachCommand": "npm run dev",
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
-  "remoteUser": "vscode"
+  "remoteUser": "vscode",
+  // papas-docs をコンテナにマウントする設定
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}/../papas-docs",
+      "target": "${containerWorkspaceFolder}/papas-docs",
+      "type": "bind"
+    }
+  ]
+  // Gitのソース管理でdocsを表示させない設定
+  // "workspaceFolder": "/workspace"
 }
