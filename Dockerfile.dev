@@ -5,17 +5,17 @@ FROM node:20-slim
 RUN apt-get update && apt-get install -y git
 
 # 3. 作業ディレクトリの指定
-WORKDIR /app
+# WORKDIR /app
 
 # 4. 依存関係ファイルの先行コピー
-COPY package*.json ./
+# COPY package*.json ./
 
 # 5. 依存関係のインストール
 # RUN npm ci
 # RUN npm install
 
 # 6. プロジェクト全体のソースコードをコピー
-COPY . .
+# COPY . .
 
 # 7. Next.jsが使用するポートを公開
 EXPOSE 3000
