@@ -43,7 +43,7 @@ export default function Home() {
 
       {/* TOKYO GASロゴを下中央に配置 */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex justify-center w-full">
-        <Image src="/images/brand_logo.png" alt="TOKYOGAS Logo" width={100} height={32} style={{ width: 100, height: 32 }} priority />
+        <Image src="/images/brand_logo.png" alt="TOKYOGAS Logo" width={100} height={32} priority />
       </div>
     </div>
   );
