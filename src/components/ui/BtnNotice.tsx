@@ -54,15 +54,14 @@ export const BtnNotice: React.FC<BtnNoticeProps> = ({
       <Image
         src={src}
         alt={noticeState === "new" ? "新着お知らせ" : "お知らせ"}
-        width={typeof size === "number" ? Number(size) : 32}
-        width={typeof size === "number" ? size : 32}
-        height={typeof size === "number" ? size : 32}
+        width={size}
+        height={size}
         className="block w-full h-full object-contain"
         draggable={false}
         priority
       />
       {/* 新着の場合はバッジ等追加可能（例：赤丸や数字など） */}
-    </div>
+    </button>
   );
 };
 
