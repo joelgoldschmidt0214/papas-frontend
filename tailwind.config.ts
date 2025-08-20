@@ -28,7 +28,7 @@ const config: Config = {
         },
         component: {
           pink: '#FA9289',          // component/pink
-        },
+        accent: '#FA9289',          // Accent color (was component/pink)
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
