@@ -1,49 +1,78 @@
+"use client";
+import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
+// アイコン画像（public/icons配下）
+const ICONS = {
+  arrowLeft: "/icons/arrow_left.svg",
+};
+
+export default function LoginConfirm() {
+  const router = useRouter();
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-white relative pt-20">
-      {/* サブタイトル */}
-      <h1 className="mt-12 mb-2 text-center font-bold text-[20px] text-[#3c3c3c] tracking-[-0.4px]">-あなたの想いが、まちを灯す-</h1>
-
-      {/* メインロゴ（炎アイコン） */}
-
-      <div className="mt-2 mb-2 flex justify-center">
-        <Image src="/images/app_logo.png" alt="TOMOSU Main" width={144} height={168} priority />
-      </div>
-
-      {/* TOMOSUロゴフォント */}
-
-      <div className="mb-2 flex justify-center">
-        <Image src="/images/app_logo_font.png" alt="TOMOSU Font" width={228} height={65} />
-      </div>
-
-      {/* powered by TOKYOGAS（サブテキスト） */}
-      <div className="mb-6 flex justify-center">
-        <span className="text-xs text-[#c4c4c4]">powered by TOKYOGAS</span>
-      </div>
-
-      {/* ログインボタン */}
+    <div className="min-h-screen bg-white flex flex-col items-center relative">
+      {/* ナビゲーションバー（戻るボタンのみ表示） */}
       <button
         type="button"
-        aria-label="myTOKYOGASでログイン"
-        className="w-[343px] h-[61px] bg-[#1b6aac] rounded-[10px] text-white font-bold text-[19px] tracking-[-0.41px] mb-4"
+        className="absolute left-2 top-4 z-10"
+        onClick={() => router.push("/login")}
       >
-        myTOKYOGASでログイン
+        <Image src={ICONS.arrowLeft} alt="戻る" width={24} height={24} />
       </button>
 
-      {/* 未契約者ボタン */}
-      <button
-        type="button"
-        aria-label="未契約者の方はこちら"
-        className="w-[343px] h-[61px] bg-[#dedede] rounded-[10px] text-[#5a5a5a] font-bold text-[19px] tracking-[-0.41px] mb-8"
-      >
-        未契約者の方はこちら
-      </button>
+      {/* タイトル */}
+      <h1 className="text-[24px] font-bold text-[#3c3c3c] text-left mt-8 mb-2 w-[343px] tracking-[-0.48px] pl-[16px]">
+        お客様情報の確認
+      </h1>
+      {/* サブテキスト */}
+      <p className="w-[343px] text-xs text-[#3c3c3c] mb-4 pl-[16px]">
+        my TOKYOGASのご登録状況を確認するため、下記の情報を入力してください。
+      </p>
 
-      {/* TOKYO GASロゴを下中央に配置 */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex justify-center w-full">
-        <Image src="/images/brand_logo.png" alt="TOKYOGAS Logo" width={100} height={32} priority />
+      {/* お客さま番号ラベル */}
+      <label className="block mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px] pl-[16px]">
+        お客さま番号
+      </label>
+      {/* お客さま番号入力欄 */}
+      <input
+        type="text"
+        placeholder="お客さま番号"
+        className="w-[343px] h-[47px] rounded-[7px] border border-[#ebebeb] px-4 mb-2 bg-white text-[#cccccc] text-xs"
+      />
+      {/* お客さま番号がわからない場合リンク */}
+      <a
+        href="#"
+        className="w-[343px] text-[#004098] text-[10px] underline pl-[16px] mb-2 text-left block"
+      >
+        お客さま番号がわからない場合
+      </a>
+
+      {/* ご本人さま確認ラベル */}
+      <label className="block mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px] pl-[16px]">
+        ご本人さま確認
+      </label>
+      {/* チェックボックス＋ラベル */}
+      <div className="flex items-center w-[343px] pl-[16px] mb-4">
+        <input
+          type="checkbox"
+          id="contractor"
+          className="w-5 h-5 border border-[#3c3c3c] rounded mr-2"
+        />
+        <label htmlFor="contractor" className="text-xs text-[#3c3c3c]">私は契約者本人です</label>
+      </div>
+
+      {/* サブテキスト（下部） */}
+      <p className="w-[343px] text-xs text-[#3c3c3c] mb-4 pl-[16px]">
+        my TOKYOGASのご登録状況を確認するため、下記の情報を入力してください。
+      </p>
+
+      {/* テストテキスト（サンプル） */}
+      <div className="w-[247px] mx-auto text-xs text-[#3c3c3c] space-y-2">
+        <p>テストテストテストテストテストテスト</p>
+        <p>テストテストテストテストテストテスト</p>
+        <p>テストテストテストテストテストテスト</p>
+        <p>テストテストテストテストテストテスト</p>
       </div>
     </div>
   );

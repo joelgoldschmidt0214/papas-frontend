@@ -70,10 +70,11 @@ export default function Login() {
         my TOKYOGASのご登録状況を確認するため、下記の情報を入力してください。
       </p>
 
-      {/* ログインボタン */}
+      {/* ログインボタン（login/confirmへ遷移） */}
       <button
         type="button"
         className="w-[344px] h-[61px] bg-[#1b6aac] rounded-[10px] text-white font-bold text-[19px] tracking-[-0.41px] mb-4"
+        onClick={() => router.push("/login/confirm")}
       >
         <span className="block text-[12px] mb-0">上記に同意して</span>
         <span className="block text-[19px]">ログイン</span>
