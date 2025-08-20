@@ -43,7 +43,8 @@ export const BtnNotice: React.FC<BtnNoticeProps> = ({
   const src = ICONS[noticeState];
   return (
     // ボタンの枠（Tailwindで丸型・背景色・枠線などを指定）
-    <div
+    <button
+      type="button"
       className={`relative flex items-center justify-center bg-background-primary rounded-full border border-component-accent ${className}`}
       style={{ width: size, height: size }} // サイズをpropsで指定
       data-name={`notice_state=${noticeState}`}
