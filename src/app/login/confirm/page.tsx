@@ -1,9 +1,6 @@
-"use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter();
   return (
     <div className="flex flex-col items-center w-full min-h-screen bg-white relative pt-20">
       {/* サブタイトル */}
@@ -31,7 +28,6 @@ export default function Home() {
         type="button"
         aria-label="myTOKYOGASでログイン"
         className="w-[343px] h-[61px] bg-[#1b6aac] rounded-[10px] text-white font-bold text-[19px] tracking-[-0.41px] mb-4"
-        onClick={() => router.push("/login")}
       >
         myTOKYOGASでログイン
       </button>
