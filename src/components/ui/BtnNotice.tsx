@@ -53,7 +53,8 @@ export const BtnNotice: React.FC<BtnNoticeProps> = ({
         src={src}
         alt={noticeState === "new" ? "新着お知らせ" : "お知らせ"}
         width={typeof size === "number" ? Number(size) : 32}
-        height={typeof size === "number" ? Number(size) : 32}
+        width={typeof size === "number" ? size : 32}
+        height={typeof size === "number" ? size : 32}
         className="block w-full h-full object-contain"
         draggable={false}
         priority
