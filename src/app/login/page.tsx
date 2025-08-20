@@ -1,41 +1,38 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // SVGアイコン（public/icons配下を利用）
 const ICONS = {
-  battery: "/icons/battery.svg", // 例: 必要に応じて追加
-  wifi: "/icons/wifi.svg",
-  mobileSignal: "/icons/mobile_signal.svg",
+  //battery: "/icons/battery.svg", // 例: 必要に応じて追加
+  //wifi: "/icons/wifi.svg",←Figmaにはあるけど不要
+  //mobileSignal: "/icons/mobile_signal.svg",←Figmaにはあるけど不要
   arrowLeft: "/icons/arrow_left.svg",
   show: "/icons/show.svg",
 };
 
 export default function Login() {
+  const router = useRouter();
   return (
     <div className="min-h-screen flex flex-col items-center justify-start relative">
-      {/* ナビゲーションバー（ステータスバー含む） */}
-      <div className="w-full max-w-[393px] bg-white shadow-lg relative">
-        {/* ステータスバー（ダミー） */}
-        <div className="flex justify-between items-center px-4 pt-2 h-6">
-          <span className="text-xs text-black">9:41</span>
-          <div className="flex gap-1">
-            {/* 必要に応じてSVGアイコンを配置 */}
-            {/* <Image src={ICONS.mobileSignal} alt="" width={20} height={20} /> */}
-            {/* <Image src={ICONS.wifi} alt="" width={20} height={20} /> */}
-            {/* <Image src={ICONS.battery} alt="" width={20} height={20} /> */}
-          </div>
-        </div>
-        {/* 戻るボタン */}
-        <button type="button" className="absolute left-2 top-8">
-          <Image src={ICONS.arrowLeft} alt="戻る" width={24} height={24} />
-        </button>
-  {/* タイトルはナビゲーションバー直下に移動（Figma通り） */}
-  </div>
-  {/* タイトル（Figma通りナビゲーションバーの下） */}
-  <h1 className="text-[24px] font-bold text-[#3c3c3c] text-left mt-8 mb-2 w-[343px] tracking-[-0.48px]">ログイン</h1>
+      {/* 戻るボタンのみ表示（ナビゲーションバー・時刻はFigmaにはあるがスマホ本体に表示されるので非表示） */}
+      <button
+        type="button"
+        className="absolute left-2 top-4 z-10" // top-8 → top-4で上に
+        onClick={() => router.push("/home")}
+      >
+        <Image src={ICONS.arrowLeft} alt="戻る" width={24} height={24} />
+      </button>
+      {/* タイトル（ナビゲーションバーの下,ここの位置が悪いのであとで修正したい） */}
+    <h1 className="text-[24px] font-bold text-[#3c3c3c] text-left mt-8 mb-2 w-[343px] tracking-[-0.48px] pl-[16px]">
+        ログイン
+      </h1>
 
-  {/* ログインIDラベル（左揃えに修正） */}
-  <label className="block mt-8 mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px]">ログインID</label>
+      {/* ログインIDラベル（左揃えに修正） */}
+      <label className="block mt-8 mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px]">
+        ログインID
+      </label>
       {/* ログインID入力欄 */}
       <input
         type="text"
@@ -43,8 +40,10 @@ export default function Login() {
         className="w-[343px] h-[47px] rounded-[7px] border border-[#ebebeb] px-4 mb-4 bg-white text-[#cccccc] text-xs"
       />
 
-  {/* パスワードラベル（左揃えに修正） */}
-  <label className="block mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px]">パスワード</label>
+      {/* パスワードラベル（左揃えに修正） */}
+      <label className="block mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px]">
+        パスワード
+      </label>
       {/* パスワード入力欄 */}
       <div className="relative w-[343px] mb-4">
         <input
@@ -53,8 +52,16 @@ export default function Login() {
           className="w-full h-[47px] rounded-[7px] border border-[#ebebeb] px-4 bg-white text-xs"
         />
         {/* パスワード表示アイコン */}
-        <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2">
-          <Image src={ICONS.show} alt="パスワード表示" width={24} height={24} />
+        <button
+          type="button"
+          className="absolute right-2 top-1/2 -translate-y-1/2"
+        >
+          <Image
+            src={ICONS.show}
+            alt="パスワード表示"
+            width={24}
+            height={24}
+          />
         </button>
       </div>
 
