@@ -21,7 +21,8 @@ export interface BtnNoticeProps {
   // お知らせの状態（新着 or 通常）
   noticeState?: NoticeState;
   // ボタンのサイズ（px, rem, % などで指定可能）
-  size?: number | string;
+  // ボタンのサイズ（px単位で指定）
+  size?: number;
   // 追加のCSSクラス（Tailwindや独自クラスを追加したい場合）
   className?: string;
 }
