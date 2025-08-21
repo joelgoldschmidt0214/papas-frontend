@@ -41,5 +41,9 @@ log.log
 *.tsbuildinfo
 next-env.d.ts
 
+# Mac config files
 .DS_Store
 Thumbs.db
+
+# DevContainer local settings
+devcontainer.local.json
