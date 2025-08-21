@@ -21,7 +21,7 @@ const PATHS = {
   brandLogo: "/icons/brand_logo.svg",
 };
 
-export default function Home(): JSX.Element {
+export default function Home(){
   return (
     <div className="flex min-h-screen w-full flex-col bg-white">
       {/* Header */}
