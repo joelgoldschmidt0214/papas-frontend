@@ -7,7 +7,7 @@ const TEXT = {
   tagline: "-あなたの想いが、まちを灯す-",
   login: "myTOKYOGASでログイン",
   guest: "未契約者の方はこちら",
-  powered: "powered by TOKYO GAS",
+  powered: "powered by TOKYOGAS",
   brandAlt: "TOKYO GAS ロゴ",
   appLogoAlt: "TOMOSU メインロゴ（炎アイコン）",
   appFontAlt: "TOMOSU ロゴフォント",
@@ -21,7 +21,7 @@ const PATHS = {
   brandLogo: "/icons/brand_logo.svg",
 };
 
-export default function Home(){
+export default function Home() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-white">
       {/* Header */}
@@ -47,7 +47,7 @@ export default function Home(){
             width={144}
             height={168}
             priority
-            sizes="(max-width: 768px) 144px, 144px"
+            className="h-auto w-36 md:w-40"
           />
         </div>
 
@@ -58,7 +58,7 @@ export default function Home(){
             alt={TEXT.appFontAlt}
             width={228}
             height={65}
-            sizes="(max-width: 768px) 228px, 228px"
+            className="h-auto w-56 md:w-60"
           />
         </div>
 
@@ -88,15 +88,17 @@ export default function Home(){
       </main>
 
       {/* Footer */}
-      <footer className="mb-6 flex w-full items-center justify-center" aria-label="フッター">
-        <Image
-          src={PATHS.brandLogo}
-          alt={TEXT.brandAlt}
-          width={100}
-          height={32}
-          priority
-          sizes="100px"
-        />
+      <footer className="mt-auto mb-6 flex w-full items-center justify-center px-4" aria-label="フッター">
+        <div className="w-full max-w-[120px]">
+          <Image
+            src={PATHS.brandLogo}
+            alt={TEXT.brandAlt}
+            width={100}
+            height={32}
+            priority
+            className="h-auto w-full"
+          />
+        </div>
       </footer>
     </div>
   );
