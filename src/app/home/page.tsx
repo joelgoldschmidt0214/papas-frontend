@@ -1,54 +1,103 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import React from "react";
 
-export default function Home() {
-  const router = useRouter();
+const TEXT = {
+  tagline: "-あなたの想いが、まちを灯す-",
+  login: "myTOKYOGASでログイン",
+  guest: "未契約者の方はこちら",
+  powered: "powered by TOKYO GAS",
+  brandAlt: "TOKYO GAS ロゴ",
+  appLogoAlt: "TOMOSU メインロゴ（炎アイコン）",
+  appFontAlt: "TOMOSU ロゴフォント",
+};
+
+const PATHS = {
+  login: "/login",
+  guest: "/guest", // TODO: 遷移先が未確定の場合は「#」等に変更
+  appLogo: "/images/app_logo.png",
+  appFontLogo: "/images/app_logo_font.png",
+  brandLogo: "/icons/brand_logo.svg",
+};
+
+export default function Home(): JSX.Element {
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-white relative pt-20">
-      {/* サブタイトル */}
-      <h1 className="mt-12 mb-2 text-center font-bold text-[20px] text-[#3c3c3c] tracking-[-0.4px]">-あなたの想いが、まちを灯す-</h1>
+    <div className="flex min-h-screen w-full flex-col bg-white">
+      {/* Header */}
+      <header className="pt-20" aria-label="アプリのヘッダー">
+        <h1 className="sr-only">TOMOSU</h1>
+      </header>
 
-      {/* メインロゴ（炎アイコン） */}
+      {/* Main */}
+      <main className="flex flex-1 flex-col items-center px-4" role="main">
+        {/* サブタイトル */}
+        <p
+          className="mt-12 mb-10 text-center text-[20px] font-bold tracking-[-0.4px] text-[#3c3c3c]"
+          aria-label="サブタイトル"
+        >
+          {TEXT.tagline}
+        </p>
 
-      <div className="mt-2 mb-2 flex justify-center">
-        <Image src="/images/app_logo.png" alt="TOMOSU Main" width={144} height={168} priority />
-      </div>
+        {/* メインロゴ（炎アイコン） */}
+        <div className="mt-4 mb-4 flex justify-center">
+          <Image
+            src={PATHS.appLogo}
+            alt={TEXT.appLogoAlt}
+            width={144}
+            height={168}
+            priority
+            sizes="(max-width: 768px) 144px, 144px"
+          />
+        </div>
 
-      {/* TOMOSUロゴフォント */}
+        {/* TOMOSUロゴフォント */}
+        <div className="mb-6 flex justify-center">
+          <Image
+            src={PATHS.appFontLogo}
+            alt={TEXT.appFontAlt}
+            width={228}
+            height={65}
+            sizes="(max-width: 768px) 228px, 228px"
+          />
+        </div>
 
-      <div className="mb-2 flex justify-center">
-        <Image src="/images/app_logo_font.png" alt="TOMOSU Font" width={228} height={65} />
-      </div>
+        {/* powered by（サブテキスト） */}
+        <div className="mb-8 flex justify-center">
+          <span className="text-xs text-[#c4c4c4]">{TEXT.powered}</span>
+        </div>
 
-      {/* powered by TOKYOGAS（サブテキスト） */}
-      <div className="mb-6 flex justify-center">
-        <span className="text-xs text-[#c4c4c4]">powered by TOKYOGAS</span>
-      </div>
+        {/* アクションボタン群 */}
+        <div className="mb-8 flex w-full max-w-[343px] flex-col items-stretch gap-4">
+          <Link
+            href={PATHS.login}
+            aria-label="myTOKYOGASでログイン"
+            className="inline-flex h-[61px] items-center justify-center rounded-[10px] bg-[#1b6aac] text-[19px] font-bold tracking-[-0.41px] text-white outline-none transition-[opacity,box-shadow] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1b6aac]/60 hover:opacity-95 active:opacity-90"
+          >
+            {TEXT.login}
+          </Link>
 
-      {/* ログインボタン */}
-      <button
-        type="button"
-        aria-label="myTOKYOGASでログイン"
-        className="w-[343px] h-[61px] bg-[#1b6aac] rounded-[10px] text-white font-bold text-[19px] tracking-[-0.41px] mb-4"
-        onClick={() => router.push("/login")}
-      >
-        myTOKYOGASでログイン
-      </button>
+          <Link
+            href={PATHS.guest}
+            aria-label="未契約者の方はこちら"
+            className="inline-flex h-[61px] items-center justify-center rounded-[10px] bg-[#dedede] text-[19px] font-bold tracking-[-0.41px] text-[#5a5a5a] outline-none transition-[opacity,box-shadow] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#9e9e9e]/50 hover:opacity-95 active:opacity-90"
+          >
+            {TEXT.guest}
+          </Link>
+        </div>
+      </main>
 
-      {/* 未契約者ボタン */}
-      <button
-        type="button"
-        aria-label="未契約者の方はこちら"
-        className="w-[343px] h-[61px] bg-[#dedede] rounded-[10px] text-[#5a5a5a] font-bold text-[19px] tracking-[-0.41px] mb-8"
-      >
-        未契約者の方はこちら
-      </button>
-
-      {/* TOKYO GASロゴを下中央に配置 */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex justify-center w-full">
-        <Image src="/images/brand_logo.png" alt="TOKYOGAS Logo" width={100} height={32} priority />
-      </div>
+      {/* Footer */}
+      <footer className="mb-6 flex w-full items-center justify-center" aria-label="フッター">
+        <Image
+          src={PATHS.brandLogo}
+          alt={TEXT.brandAlt}
+          width={100}
+          height={32}
+          priority
+          sizes="100px"
+        />
+      </footer>
     </div>
   );
 }
