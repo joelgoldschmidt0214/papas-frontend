@@ -43,6 +43,14 @@ export default function Home() {
               My Page
             </Link>
           </li>
+          <li>
+            <Link
+              href="/mypage/profile"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Profile
+            </Link>
+          </li>
         </ul>
       </main>
     </div>
