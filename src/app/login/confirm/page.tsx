@@ -52,14 +52,17 @@ export default function LoginConfirm() {
       <label className="block mb-1 text-xs text-[#3c3c3c] font-normal tracking-[-0.24px] text-left w-[343px] pl-[16px]">
         ご本人さま確認
       </label>
-      {/* チェックボックス＋ラベル */}
+      {/* チェックボックス＋ラベル（選択でマイページへ遷移） */}
       <div className="flex items-center w-[343px] pl-[16px] mb-4">
         <input
           type="checkbox"
           id="contractor"
-          className="w-5 h-5 border border-[#3c3c3c] rounded mr-2"
+          className="w-5 h-5 border border-[#3c3c3c] rounded mr-2 cursor-pointer"
+          onChange={e => {
+            if (e.target.checked) router.push("/mypage");
+          }}
         />
-        <label htmlFor="contractor" className="text-xs text-[#3c3c3c]">私は契約者本人です</label>
+        <label htmlFor="contractor" className="text-xs text-[#3c3c3c] cursor-pointer">私は契約者本人です</label>
       </div>
 
       {/* サブテキスト（下部） */}
