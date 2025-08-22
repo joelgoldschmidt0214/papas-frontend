@@ -57,7 +57,7 @@ const dummySurveys: Survey[] = [
     id: 4,
     targetAudience: "一般",
     title: "移動・交通手段に関するアンケート",
-    description: "地域ないの移動をより便利にするために、どんな課題がありますか？",
+    description: "地域内の移動をより便利にするために、どんな課題がありますか？",
     deadline: "2025年9月10日",
     points: 30,
     isAnswered: false, // このユーザーは未回答
