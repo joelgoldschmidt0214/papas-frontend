@@ -1,69 +1,93 @@
-// Noticeボタン（お知らせ有無）UIコンポーネント
-// Figmaデザイン・MCP情報をもとに作成
-// --------------------------------------------------
-// このファイルは「お知らせボタン」を部品化したReactコンポーネントです。
-// 画面ごとに使い回せるように、src/components/ui/に配置しています。
-//
-// 使い方例：
-// <BtnNotice noticeState="new" size={40} />
-//
-// propsで「状態（新着 or 通常）」「サイズ」「追加クラス」を指定できます。
-// SVGアイコンはpublic/icons配下のファイルを利用します。
-// --------------------------------------------------
+// src/components/ui/BtnNotice.tsx
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-// noticeState: "new"なら新着アイコン、"default"なら通常アイコンを表示
 export type NoticeState = "new" | "default";
 
-// BtnNoticeコンポーネントのprops（外部から渡す値）
 export interface BtnNoticeProps {
-  // お知らせの状態（新着 or 通常）
   noticeState?: NoticeState;
-  // ボタンのサイズ（px, rem, % などで指定可能）
-  // ボタンのサイズ（px単位で指定）
   size?: number;
-  // 追加のCSSクラス（Tailwindや独自クラスを追加したい場合）
   className?: string;
+  href?: string;
+  onClick?: () => void;
+  ariaLabel?: string;
+  priority?: boolean;
 }
 
-// noticeStateごとに表示するSVGアイコンのパスを定義
 const ICONS = {
-  new: "/icons/notice_state=new.svg",      // 新着お知らせアイコン
-  default: "/icons/notice_state=default.svg", // 通常お知らせアイコン
-};
+  new: "/icons/notice_state=new.svg",
+  default: "/icons/notice_state=default.svg",
+} as const;
 
-// BtnNoticeコンポーネント本体
-// propsで渡された値に応じて表示内容・スタイルを切り替えます
-export const BtnNotice: React.FC<BtnNoticeProps> = ({
-  noticeState = "default", // デフォルトは通常アイコン
-  size = 32,               // デフォルトサイズは32px
-  className = "",          // 追加クラスがなければ空
-}) => {
-  // noticeStateに応じて表示するSVGアイコンのパスを取得
-  const src = ICONS[noticeState];
+function NoticeInner({
+  src,
+  alt,
+  size,
+  priority,
+}: {
+  src: string;
+  alt: string;
+  size: number;
+  priority?: boolean;
+}) {
   return (
-    // ボタンの枠（Tailwindで丸型・背景色・枠線などを指定）
+    <Image
+      src={src}
+      alt={alt}
+      width={size}
+      height={size}
+      className="h-full w-full object-contain"
+      draggable={false}
+      priority={priority}
+    />
+  );
+}
+
+export default function BtnNotice({
+  noticeState = "default",
+  size = 20, // デフォルトを小さめに変更
+  className = "",
+  href,
+  onClick,
+  ariaLabel,
+  priority,
+}: BtnNoticeProps) {
+  const src = ICONS[noticeState];
+  const alt = ariaLabel ?? (noticeState === "new" ? "新着お知らせ" : "お知らせ");
+
+  const style: React.CSSProperties = { width: size, height: size };
+
+  // ✅ 外枠(border)を削除し、透過背景のみに変更
+  const base =
+    "relative inline-flex items-center justify-center rounded-full transition outline-none " +
+    "hover:opacity-90 active:opacity-80 focus-visible:ring-2 focus-visible:ring-brand-blue/60 focus-visible:ring-offset-1";
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        aria-label={alt}
+        className={`${base} ${className}`}
+        style={style}
+      >
+        <NoticeInner src={src} alt={alt} size={size} priority={priority} />
+      </Link>
+    );
+  }
+
+  return (
     <button
       type="button"
-      className={`relative flex items-center justify-center bg-background-primary rounded-full border border-component-accent ${className}`}
-      style={{ width: size, height: size }} // サイズをpropsで指定
-      data-name={`notice_state=${noticeState}`}
+      aria-label={alt}
+      onClick={onClick}
+      className={`${base} ${className}`}
+      style={style}
+      data-notice-state={noticeState}
     >
-      {/* SVGアイコン画像を表示（Next.jsのImageで最適化） */}
-      <Image
-        src={src}
-        alt={noticeState === "new" ? "新着お知らせ" : "お知らせ"}
-        width={size}
-        height={size}
-        className="block w-full h-full object-contain"
-        draggable={false}
-        priority
-      />
-      {/* 新着の場合はバッジ等追加可能（例：赤丸や数字など） */}
+      <NoticeInner src={src} alt={alt} size={size} priority={priority} />
     </button>
   );
-};
-
-// 他のファイルからimportしやすいようにexport default
-export default BtnNotice;
+}
