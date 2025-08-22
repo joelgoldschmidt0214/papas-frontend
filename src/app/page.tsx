@@ -51,6 +51,22 @@ export default function Home() {
               My Page Profile
             </Link>
           </li>
+          <li>
+            <Link
+              href="/compose"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Compose
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/timeline"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Timeline
+            </Link>
+          </li>
         </ul>
       </main>
     </div>
