@@ -67,6 +67,14 @@ export default function Home() {
               Timeline
             </Link>
           </li>
+          <li>
+            <Link
+              href="/surveys"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Surveys
+            </Link>
+          </li>
         </ul>
       </main>
     </div>
