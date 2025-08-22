@@ -8,74 +8,105 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 /**
- * フォローしているユーザー情報の型定義。
+ * フォロワーのユーザー情報の型定義。
+ * isFollowingプロパティで「自分がそのユーザーをフォローバックしているか」を管理します。
  */
-type FollowedUser = {
+type FollowerUser = {
   id: number;
   username: string;
   bio: string | null;
   profileImageUrl: string;
-  isFollowing: boolean;
+  isFollowing: boolean; // trueならフォローバック済み、falseなら未フォロー
 };
 
 /**
  * APIからデータを取得するまでの間、画面に表示するためのダミーデータ。
+ * スクリーンショットに合わせて、フォローバック済みのユーザーとそうでないユーザーを混在させます。
  */
-const dummyFollowingData: FollowedUser[] = [
+const dummyFollowersData: FollowerUser[] = [
   {
     id: 1,
     username: 'Username 1',
-    bio: '自己紹介文が入ります。よろしくお願いします。',
+    bio: '今日はTech0の発表🔥\n緊張するけど頑張ろう！\nみんなの応援よろしく！',
     profileImageUrl: '/icons/icon_image_01.svg',
-    isFollowing: true,
+    isFollowing: true, // このユーザーはフォローバック済み
   },
   {
     id: 2,
     username: 'Username 2',
-    bio: '美味しいものが好きです。',
+    bio: 'オリジナルTシャツ👕\nデザインが素敵！',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 3,
     username: 'Username 3',
-    bio: null, // 自己紹介がないユーザー
+    bio: '子育て奮闘中👶\n日々の成長記録を投稿しています\n同じパパ・ママさん仲良くしてください！',
     profileImageUrl: '/icons/icon_image_01.svg',
-    isFollowing: true,
+    isFollowing: false, // このユーザーは未フォロー
   },
   {
     id: 4,
     username: 'Username 4',
-    bio: '地域のイベント情報を発信しています！',
+    bio: '画像生成AIでアート制作中🎨\n新しい表現方法を模索しています',
     profileImageUrl: '/icons/icon_image_01.svg',
-    isFollowing: true,
+    isFollowing: false,
   },
   {
     id: 5,
     username: 'Username 5',
-    bio: 'よろしくお願いします。',
+    bio: '音楽と映画が大好き🎶\nおすすめあったら教えてください！\nよろしくお願いします！',
     profileImageUrl: '/icons/icon_image_01.svg',
-    isFollowing: true,
+    isFollowing: false,
   },
 ];
 
 /**
- * フォロー一覧ページのメインコンポーネント
+ * フォロワー一覧ページのメインコンポーネント
  */
-const FollowingPage = () => {
-  const [followingUsers, setFollowingUsers] = useState<FollowedUser[]>([]);
+const FollowersPage = () => {
+  // フォロワーのリストを状態として管理します。
+  const [followers, setFollowers] = useState<FollowerUser[]>([]);
 
+  /**
+   * コンポーネントが最初に読み込まれた時に一度だけ実行される処理。
+   * ここでAPIを呼び出し、フォロワーのリストを取得します。
+   */
   useEffect(() => {
-    // 今回はAPIがないため、代わりにダミーデータをstateにセットします。
-    setFollowingUsers(dummyFollowingData);
-  }, []);
+    // 【将来的な実装】
+    // ここでバックエンドAPIにリクエストを送り、フォロワーのデータを取得します。
+    // API仕様書(API_USAGE_EXAMPLES.md)の `/api/v1/users/{user_id}/followers` を想定しています。
+    // const fetchFollowers = async () => {
+    //   try {
+    //     const response = await fetch('/api/v1/users/me/followers'); // APIエンドポイントの例
+    //     const data = await response.json();
+    //
+    //     // isFollowingの状態もAPIから取得するか、別途判定ロジックが必要です。
+    //     setFollowers(data);
+    //
+    //   } catch (error) {
+    //     console.error('フォロワー情報の取得に失敗しました:', error);
+    //   }
+    // };
+    // fetchFollowers();
 
+    // 今回はAPIがないため、代わりにダミーデータをstateにセットします。
+    setFollowers(dummyFollowersData);
+  }, []); // 第2引数の空配列は、この処理が初回レンダリング時にのみ実行されることを意味します。
+
+  /**
+   * フォロー/フォロー解除ボタンのクリックイベントハンドラ。
+   * @param userId - クリックされたユーザーのID
+   */
   const handleFollowToggle = (userId: number) => {
+    // 【将来的な実装】
+    // ここでフォロー/フォロー解除のAPIを呼び出します。
+    
     // フロントエンドの表示を先に切り替える例：
-    setFollowingUsers(currentUsers =>
+    setFollowers(currentUsers =>
       currentUsers.map(user =>
         user.id === userId
-          ? { ...user, isFollowing: !user.isFollowing }
+          ? { ...user, isFollowing: !user.isFollowing } // 対象ユーザーのisFollowing状態を反転
           : user
       )
     );
@@ -89,7 +120,7 @@ const FollowingPage = () => {
           <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
         </Link>
         <h1 className="font-bold text-base absolute left-1/2 -translate-x-1/2">
-          フォロー
+          フォロワー
         </h1>
         <div className="w-8"></div>
       </header>
@@ -98,7 +129,7 @@ const FollowingPage = () => {
       <main className="flex-grow overflow-y-auto">
         {/* ユーザーリスト */}
         <div className="divide-y divide-gray-100">
-          {followingUsers.map((user) => (
+          {followers.map((user) => (
             <div key={user.id} className="flex items-center px-4 py-3">
               {/* プロフィール画像 */}
               <div className="w-14 h-14 flex-shrink-0">
@@ -121,15 +152,15 @@ const FollowingPage = () => {
                 )}
               </div>
 
-              {/* フォロー/フォロー中ボタン（followersページと同一アイコン・スタイル） */}
+              {/* フォロー/フォロー中ボタン */}
               <div className="ml-4 flex-shrink-0">
                 <button
                   onClick={() => handleFollowToggle(user.id)}
                   className={`flex items-center justify-center w-28 h-8 rounded-full border text-xs font-semibold transition-colors
                     ${
                       user.isFollowing
-                        ? 'bg-brand-blue text-white border-brand-blue' // 「フォロー中」青背景＋白文字＋青枠
-                        : 'bg-white text-brand-blue border-brand-blue' // 「フォローする」白背景＋青文字＋青枠
+                        ? 'bg-brand-blue text-white border-brand-blue'
+                        : 'bg-white text-brand-blue border-brand-blue'
                     }
                   `}
                 >
@@ -156,4 +187,4 @@ const FollowingPage = () => {
   );
 };
 
-export default FollowingPage;
+export default FollowersPage;
