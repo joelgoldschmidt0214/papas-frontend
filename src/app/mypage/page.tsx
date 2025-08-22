@@ -34,9 +34,9 @@ function Bubble({
   const style: React.CSSProperties = { left, top, ...(width ? { width } : {}) };
   const classes =
     "absolute -translate-x-1/2 inline-flex items-center justify-center " +
-    "rounded-full border border-brand-primary/30 bg-white/95 px-3 py-1 shadow " +
+    "rounded-full border border-brand-primary/30 bg-white/75 px-3 py-1 shadow " +
     "text-[11px] text-text-primary backdrop-blur-[2px] " +
-    "transition-transform duration-200 ease-out motion-safe:hover:scale-[1.04] active:scale-[1.02]";
+    "transition-transform duration-400 ease-out motion-safe:hover:scale-[1.12] motion-safe:hover:rotate-1";
   const content = <span className="truncate text-center">{text}</span>;
 
   return href ? (
@@ -160,7 +160,7 @@ export default function Mypage() {
         className="fixed bottom-[100px] right-4 z-50 inline-flex size-14 items-center justify-center rounded-full bg-brand-blue shadow-md"
         aria-label="投稿する"
       >
-        <Image src={IMG.compose} alt="" width={32} height={32} />
+        <Image src={IMG.compose} alt="" width={60} height={60} />
       </Link>
 
       {/* 共通 Menubar */}
