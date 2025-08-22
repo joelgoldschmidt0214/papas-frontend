@@ -96,13 +96,30 @@ const fetchTimelinePosts = async (
   skip: number = 0,
   limit: number = 20
 ): Promise<Post[]> => {
-  const baseUrl = "http://localhost:8000";
+  // 環境変数からAPIのベースURLを取得します
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  // 環境変数が設定されていない場合のエラーハンドリングを追加
+  if (!baseUrl) {
+    console.error(
+      "API URL is not defined. Please set the NEXT_PUBLIC_API_URL environment variable."
+    );
+    throw new Error("APIのURLが設定されていません。");
+  }
+
   const response = await fetch(
     `${baseUrl}/api/v1/posts/timeline?skip=${skip}&limit=${limit}`
   );
+
   if (!response.ok) {
+    // エラー時にレスポンス内容を確認できるようにすると、デバッグが楽になります
+    const errorBody = await response.text();
+    console.error(
+      `API request failed with status ${response.status}: ${errorBody}`
+    );
     throw new Error("APIからのデータ取得に失敗しました");
   }
+
   return await response.json();
 };
 
