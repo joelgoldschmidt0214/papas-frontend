@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
-          <div className="w-full max-w-[393px] min-h-screen bg-white flex flex-col mx-auto shadow-lg">
+          <div className="w-full max-w-[440px] min-h-screen bg-white flex flex-col mx-auto shadow-lg">
             {children}
           </div>
         </div>

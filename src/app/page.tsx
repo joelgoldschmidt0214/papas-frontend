@@ -43,6 +43,62 @@ export default function Home() {
               My Page
             </Link>
           </li>
+          <li>
+            <Link
+              href="/mypage/profile"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Profile
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/mypage/profile/edit"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Profile Edit
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/mypage/following"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Following
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/mypage/followers"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Followers
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/compose"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Compose
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/timeline"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Timeline
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/surveys"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              Surveys
+            </Link>
+          </li>
         </ul>
       </main>
     </div>

@@ -1,172 +1,170 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Menubar from "@/components/ui/menubar";
+import BtnNotice from "@/components/ui/BtnNotice";
 
-// Figma MCP取得画像・SVG定数
-const imgBackgroundImg = "/images/background-img.png";
-const img_icon_image = "/images/icon_image_01.png";
-const imgImage28 = "/images/banner_image.png";
-const imgNoticeStateNew = "/icons/notice_state=new.svg";
-const imgFluentMdl2Street = "/icons/btn_home_icon.svg";
-const imgPostButton = "/images/post_button.png";
-const img1 = "/icons/btn_home.svg";
-const img2 = "/icons/btn_timeline.svg";
-const img3 = "/icons/btn_survey.svg";
-const img4 = "/icons/btn_mypage.svg";
-const imgBtnNews = "/icons/btn_news.svg";
+/** 画像・アイコンのパス */
+const IMG = {
+  bg: "/images/background-img.jpg",      // 1170x1800（縦長）
+  banner: "/images/banner_home.jpg",
+  avatar: "/images/profile_icon.png",
+  town: "/icons/town.svg",
+  compose: "/icons/btn-compose.svg",
+};
 
-interface BtnNoticeProps {
-  noticeState?: "new" | "default";
-}
+/** 吹き出し（共通） */
+function Bubble({
+  text,
+  left,
+  top,
+  width,
+  href,
+  ariaLabel,
+}: {
+  text: string;
+  left: string;   // 例 "75%"
+  top: string;    // 例 "33%"
+  width?: string; // 例 "56%"
+  href?: string;
+  ariaLabel?: string;
+}) {
+  const style: React.CSSProperties = { left, top, ...(width ? { width } : {}) };
+  const classes =
+    "absolute -translate-x-1/2 inline-flex items-center justify-center " +
+    "rounded-full border border-brand-primary/30 bg-white/75 px-3 py-1 shadow " +
+    "text-[11px] text-text-primary backdrop-blur-[2px] " +
+    "transition-transform duration-400 ease-out motion-safe:hover:scale-[1.12] motion-safe:hover:rotate-1";
+  const content = <span className="truncate text-center">{text}</span>;
 
-// ...existing code...
-
-export default function Mypage() {
-  return (
-    <div className="bg-[#ffffff] relative size-full">
-      {/* 背景イラスト */}
-      <div className="absolute bg-[49.96%_46.18%] bg-no-repeat bg-size-[100.01%_140.5%] h-[679px] left-[-23px] top-[173px] w-[440px]" style={{ backgroundImage: `url('${imgBackgroundImg}')` }} />
-
-      {/* ナビゲーションバーは省略（スマホ本体に表示されるので非表示） */}
-  {/* ナビゲーションバー枠のみ（アイコン・時刻は非表示） */}
-  <div className="absolute bg-[#ffffff] h-[92px] left-0 top-0 w-[392px]" />
-
-      {/* ユーザー情報・お知らせボタン・エリア名 */}
-      <div className="absolute bottom-[87.91%] left-0 overflow-clip right-[0.25%] top-[4.7%]">
-        <div className="absolute contents left-[22px] top-1.5">
-          <div className="absolute bg-center bg-cover bg-no-repeat left-6 size-[45px] top-[9px]" style={{ backgroundImage: `url('${img_icon_image}')` }} />
-        </div>
-  <div className="absolute flex flex-col font-bold justify-end leading-[0] left-[115.5px] text-text-primary text-[14px] text-center text-nowrap top-[50px] tracking-[-0.28px] translate-x-[-50%] translate-y-[-100%]">
-          <p className="leading-[normal] whitespace-pre">username</p>
-        </div>
-        <div className="absolute left-[354px] overflow-clip size-[22px] top-[9px]">
-          <BtnNotice noticeState="new" />
-        </div>
-        <div className="absolute bg-[#d7e0ff] h-[21px] left-[119px] rounded-[5px] top-2 w-[169px]">
-          <div aria-hidden="true" className="absolute border-[#1b6aac] border-[0.5px] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        </div>
-        <div className="absolute h-[26px] left-[86px] top-1.5 w-6">
-          <Image alt="エリアアイコン" className="block max-w-none size-full" src={imgFluentMdl2Street} width={24} height={24} />
-        </div>
-  <div className="absolute font-normal leading-[0] left-[127px] text-text-primary text-[12px] text-nowrap top-2.5 tracking-[-0.24px]">
-          <p className="leading-[normal] whitespace-pre">東京都江東区</p>
-        </div>
-      </div>
-
-      {/* お知らせバナー */}
-      {/* Figma MCP準拠：imgImage28画像のみ中央表示（青枠は画像に含まれる） */}
-      <div className="absolute left-0 top-[107px] w-[393px] h-[65px] flex items-center justify-center">
-        <Image alt="お知らせバナー" src={imgImage28} width={393} height={65} />
-      </div>
-
-      {/* 投稿ボタン */}
-      <div className="absolute contents left-[316px] top-[700px]">
-        <div className="absolute left-[316px] size-[60px] top-[700px] bg-[#1b6aac] rounded-full flex items-center justify-center">
-          <Image alt="投稿アイコン" src={imgPostButton} width={24} height={24} />
-        </div>
-      </div>
-
-      {/* フッター（ナビゲーション） */}
-      <div className="absolute h-[84px] left-0 top-[768px] w-[393px]">
-        <div className="absolute bg-[#1b6aac] inset-0" />
-        <div className="absolute content-stretch flex gap-[51px] items-end justify-start left-8 top-3.5">
-          {/* Home */}
-          <div className="content-stretch flex flex-col gap-[3px] items-center justify-start relative shrink-0 w-[37px]">
-            <div className="h-[37px] relative shrink-0 w-full">
-              <div className="absolute inset-[8.33%_10.42%]">
-                <div className="absolute inset-[-3.75%_-3.95%]" style={{ "--stroke-0": "rgba(255, 255, 255, 1)" } as React.CSSProperties}>
-                  <Image alt="ホームアイコン" className="block max-w-none size-full" src={img1} width={24} height={24} />
-                </div>
-              </div>
-            </div>
-            <div className="font-normal leading-[0] relative shrink-0 text-[#ffffff] text-[10px] text-center w-full">
-            </div>
-          </div>
-          {/* Timeline */}
-          <div className="content-stretch flex flex-col gap-[3px] items-start justify-start relative shrink-0 w-12">
-            <div className="h-[37px] relative shrink-0 w-full">
-              <div className="absolute inset-[8.333%]">
-                <div className="absolute inset-[-3.75%]">
-                  <Image alt="タイムラインアイコン" className="block max-w-none size-full" src={img2} width={24} height={24} />
-                </div>
-              </div>
-            </div>
-            <div className="font-normal leading-[0] relative shrink-0 text-[#ffffff] text-[10px] text-center w-full">
-            </div>
-          </div>
-          {/* Survey */}
-          <div className="content-stretch flex flex-col gap-[3px] items-start justify-start relative shrink-0 w-11">
-            <div className="h-[37px] relative shrink-0 w-full">
-              <div className="absolute inset-[11.46%_17.49%_12.02%_17.71%]">
-                <div className="absolute inset-[-4.08%_-4.82%]">
-                  <Image alt="アンケートアイコン" className="block max-w-none size-full" src={img3} width={24} height={24} />
-                </div>
-              </div>
-            </div>
-            <div className="font-normal leading-[0] relative shrink-0 text-[#ffffff] text-[10px] text-center w-full">
-            </div>
-          </div>
-          {/* My Page */}
-          <div className="content-stretch flex flex-col gap-0.5 items-start justify-start relative shrink-0 w-11">
-            <div className="h-[39px] relative shrink-0 w-full">
-              <div className="absolute inset-[11.73%_20.19%_11.58%_20.06%]">
-                <div className="absolute inset-[-3.88%_-5.23%_-4.07%_-5.23%]">
-                  <Image alt="マイページアイコン" className="block max-w-none size-full" src={img4} width={24} height={24} />
-                </div>
-              </div>
-            </div>
-            <div className="font-normal leading-[0] relative shrink-0 text-[#ffffff] text-[10px] text-center w-full">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* お知らせアイコン・テキスト群（サンプル配置） */}
-      <div className="absolute h-[25px] left-[254px] top-[255px] w-32">
-        <Image alt="お知らせアイコン" className="block max-w-none size-full" src={imgBtnNews} width={32} height={25} />
-      </div>
-      <div className="absolute h-[25px] left-[220px] top-96 w-32">
-        <Image alt="お知らせアイコン" className="block max-w-none size-full" src={imgBtnNews} width={32} height={25} />
-      </div>
-      <div className="absolute h-[25px] left-[179px] top-[560px] w-32">
-        <Image alt="お知らせアイコン" className="block max-w-none size-full" src={imgBtnNews} width={32} height={25} />
-      </div>
-      {/* 9/6のイベントをチェック！の吹き出し枠とテキストをFigma MCP座標で統合 */}
-      <div className="absolute left-[74.5px] top-[457px] w-[129px] h-[25px] flex items-center justify-center">
-        <Image alt="お知らせ枠アイコン" className="absolute left-0 top-0 w-full h-full" src={imgBtnNews} width={129} height={25} />
-        <div className="absolute left-0 top-0 w-full h-full flex items-center justify-center">
-          <span className="text-text-primary text-[9px] text-center leading-[normal] whitespace-pre">9/6のイベントをチェック！</span>
-        </div>
-      </div>
-      <div className="absolute flex flex-col font-normal justify-end leading-[0] left-[320.5px] text-text-primary text-[9px] text-center text-nowrap top-[272px] tracking-[-0.18px] translate-x-[-50%] translate-y-[-100%]">
-        <p className="leading-[normal] whitespace-pre">東京ガスからのお知らせです。</p>
-      </div>
-      <div className="absolute flex flex-col font-normal justify-end leading-[0] left-[283px] text-text-primary text-[9px] text-center text-nowrap top-[401px] tracking-[-0.18px] translate-x-[-50%] translate-y-[-100%]">
-        <p className="leading-[normal] whitespace-pre">メンテナンスのお知らせ。</p>
-      </div>
-      <div className="absolute flex flex-col font-normal justify-end leading-[0] left-[245px] text-text-primary text-[9px] text-center text-nowrap top-[577px] tracking-[-0.18px] translate-x-[-50%] translate-y-[-100%]">
-        <p className="leading-[normal] whitespace-pre">保育園情報が更新されました。</p>
-      </div>
+  return href ? (
+    <Link href={href} aria-label={ariaLabel ?? text} className={classes} style={style}>
+      {content}
+    </Link>
+  ) : (
+    <div aria-label={ariaLabel ?? text} className={classes} style={style}>
+      {content}
     </div>
   );
 }
 
-interface BtnNoticeProps {
-  noticeState?: "new" | "default";
-}
+export default function Mypage() {
+  return (
+    // アプリ全体：中央寄せ・最大幅 440px、最大高さ 930px でスクロール抑止
+    <div className="relative mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-white max-h-[930px] overflow-hidden">
+      <div className="flex-1">
+        {/* 上余白 40px */}
+        <div className="h-10" aria-hidden />
 
-function BtnNotice({ noticeState = "default" }: BtnNoticeProps) {
-  if (noticeState === "new") {
-    return (
-      <div className="relative size-full">
-        <div className="absolute inset-[3.571%]">
-          <div className="absolute inset-[-2.448%]">
-            <Image alt="" className="block max-w-none size-full" src={imgNoticeStateNew} width={24} height={24} />
+        {/* HEADER（通知ボタン配置のため relative） */}
+        <header className="relative px-4">
+          <div className="flex items-center justify-between">
+            {/* 左：プロフィール + 地域 */}
+            <div className="flex items-center gap-3">
+              <Image
+                src={IMG.avatar}
+                alt="プロフィール画像"
+                width={45}
+                height={45}
+                className="rounded-full"
+                priority
+              />
+              <div>
+                {/* 地域バッジ：左に town.svg */}
+                <div className="inline-flex items-center gap-1.5 rounded-md border border-brand-blue/50 bg-brand-secondary px-2 py-0.5 text-[12px] text-text-primary">
+                  <Image src={IMG.town} alt="" width={16} height={16} className="h-4 w-4" />
+                  <span>東京都江東区</span>
+                </div>
+                <p className="mt-1 text-[14px] font-bold text-text-primary">username</p>
+              </div>
+            </div>
+
+            {/* 右：通知ボタン（小さめ・右余白 right-4） */}
+            <div className="pointer-events-auto absolute right-4 top-1/2 -translate-y-1/2">
+              <BtnNotice noticeState="new" size={20} href="/notifications" ariaLabel="お知らせ" />
+            </div>
           </div>
-        </div>
+        </header>
+
+        {/* 区切り線（フルブリードで横いっぱい） */}
+        <div className="my-3 h-[0.5px] w-full bg-black/10" />
+
+        {/* BANNER（横幅優先・比率維持） */}
+        <section className="w-full">
+          <Image
+            src={IMG.banner}
+            alt="TOKYO GAS からのお知らせをチェック！"
+            width={393}
+            height={65}
+            sizes="(max-width: 440px) 100vw, 440px"
+            className="block h-auto w-full"
+            priority
+          />
+          <div className="my-3 h-[0.5px] w-full bg-black/10" />
+        </section>
+
+        {/* 背景イラスト（横幅優先） */}
+        <main className="w-full">
+          <div className="relative w-full -translate-y-[6px]">
+            <Image
+              src={IMG.bg}
+              alt="まちの背景イラスト"
+              width={1170}
+              height={1800}
+              sizes="(max-width: 440px) 100vw, 440px"
+              className="block h-auto w-full"
+              priority
+            />
+
+            {/* ===== 背景イラスト上の吹き出し（位置は％で微調整可能） ===== */}
+            {/* ① 東京ガスからのお知らせです。 */}
+            <Bubble
+              text="東京ガスからのお知らせです。"
+              left="76%"
+              top="15%"
+              width="180px"
+            />
+
+            {/* ② メンテナンスのお知らせ。 */}
+            <Bubble
+              text="メンテナンスのお知らせ♪"
+              left="68%"
+              top="38%"
+              width="160px"
+            />
+
+            {/* ③ 9/6のイベントをチェック！ */}
+            <Bubble
+              text="9/6のイベントをチェック！"
+              left="32%"
+              top="48%"
+              width="180px"
+            />
+
+            {/* ④ 保育園情報が更新されました。 */}
+            <Bubble
+              text="保育園情報が更新されました。"
+              left="54%"
+              top="62%"
+              width="180px"
+            />
+          </div>
+        </main>
       </div>
-    );
-  }
-  return null;
+
+      {/* 投稿ボタン（右下固定・右余白 right-4、Menubar を避ける高さ） */}
+      <Link
+        href="/compose"
+        className="fixed bottom-[100px] right-4 z-50 inline-flex size-14 items-center justify-center rounded-full bg-brand-blue shadow-md"
+        aria-label="投稿する"
+      >
+        <Image src={IMG.compose} alt="" width={60} height={60} />
+      </Link>
+
+      {/* 共通 Menubar */}
+      <Menubar active="mypage" />
+    </div>
+  );
 }
