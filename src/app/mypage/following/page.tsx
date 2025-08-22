@@ -27,8 +27,7 @@ const dummyFollowingData: FollowedUser[] = [
     username: 'Username 1',
     bio: '自己紹介文が入ります。よろしくお願いします。',
     profileImageUrl: '/images/icon_image_01.png',
-    // 最初のユーザーを「フォローしていない」状態にして、ボタンの切り替えを確認しやすくします。
-    isFollowing: false,
+    isFollowing: true,
   },
   {
     id: 2,
