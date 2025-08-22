@@ -47,7 +47,7 @@ export default function Home() {
             width={144}
             height={168}
             priority
-            className="h-auto w-36 md:w-40"
+            className="h-auto w-28 md:w-32"
           />
         </div>
 
@@ -58,7 +58,7 @@ export default function Home() {
             alt={TEXT.appFontAlt}
             width={228}
             height={65}
-            className="h-auto w-56 md:w-60"
+            className="h-auto w-44 md:w-48"
           />
         </div>
 
