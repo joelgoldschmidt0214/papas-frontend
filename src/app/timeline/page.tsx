@@ -41,76 +41,72 @@ type Post = {
 };
 
 // --- ダミーデータ ---
-// API連携時には、この部分をAPIから取得したデータに置き換えます
+// API通信失敗時のフォールバック用
 const dummyPosts: Post[] = [
   {
     post_id: 1,
-    author: {
-      username: "username-1",
-      profile_image_url: "/images/default-avatar.png", // public/images/に配置したデフォルトアバター
-    },
-    tags: [{ tag_name: "お得情報" }, { tag_name: "グルメ" }],
     content:
       "豊洲の近くにできた焼肉屋さん美味しかった！今なら500円クーポンあるらしい。",
+    created_at: "2024-05-20T12:00:00Z",
+    updated_at: "2024-05-20T12:00:00Z",
+    author: {
+      user_id: 1,
+      username: "username-1",
+      display_name: "グルメな豊洲民",
+      profile_image_url: "/images/default-avatar.png",
+    },
+    images: [],
+    tags: [
+      { tag_id: 1, tag_name: "お得情報", posts_count: 101 },
+      { tag_id: 2, tag_name: "グルメ", posts_count: 250 },
+    ],
     likes_count: 12,
     comments_count: 1,
     bookmarks_count: 3,
+    is_liked: false,
+    is_bookmarked: true,
   },
   {
     post_id: 2,
-    author: {
-      username: "username-2",
-      profile_image_url: "/images/default-avatar.png",
-    },
-    tags: [{ tag_name: "おすすめ施設" }, { tag_name: "子育て" }],
     content:
       "豊洲のららぽーとに行ってきたよ！雨の日でも楽しめるから子連れに最高✨ 広々としたキッズスペースで、子どもたちは大はしゃぎ！おむつ替えスペースや授乳室も完備されてて、ママパパにも優しい設計でした😊",
-    image_url: "/images/kids-space.jpg", // public/images/に配置した画像
+    created_at: "2024-05-19T18:30:00Z",
+    updated_at: "2024-05-19T18:30:00Z",
+    author: {
+      user_id: 2,
+      username: "username-2",
+      display_name: "豊洲ママ",
+      profile_image_url: "/images/default-avatar.png",
+    },
+    images: [{ image_url: "/images/kids-space.jpg", display_order: 1 }],
+    tags: [
+      { tag_id: 3, tag_name: "おすすめ施設", posts_count: 88 },
+      { tag_id: 4, tag_name: "子育て", posts_count: 123 },
+    ],
     likes_count: 32,
     comments_count: 4,
     bookmarks_count: 16,
-  },
-  {
-    post_id: 3,
-    author: {
-      username: "username-3",
-      profile_image_url: "/images/default-avatar.png",
-    },
-    tags: [{ tag_name: "イベント" }],
-    content:
-      "9月6日（土）、豊洲ぐるり公園にて「地域交流マルシェ2025」を開催いたします。\n新鮮な地元野菜や特産品の販売、ステージパフォーマンス、体験コーナーなど、幅広い世代の方にお楽しみいただける催しをご用意しております😊",
-    likes_count: 88,
-    comments_count: 12,
-    bookmarks_count: 25,
+    is_liked: true,
+    is_bookmarked: false,
   },
 ];
 
 // --- API通信関数 ---
-// (将来的には src/lib/api.ts などに移動するのが望ましい)
 const fetchTimelinePosts = async (
   skip: number = 0,
   limit: number = 20
 ): Promise<Post[]> => {
-  // 環境変数からAPIのベースURLを取得するのが理想
-  // 例: const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-  const baseUrl = "http://localhost:8000"; // ローカル開発用に直書き
-
+  const baseUrl = "http://localhost:8000";
   const response = await fetch(
     `${baseUrl}/api/v1/posts/timeline?skip=${skip}&limit=${limit}`
   );
-
   if (!response.ok) {
-    // エラーハンドリング: レスポンスがOKでない場合
     throw new Error("APIからのデータ取得に失敗しました");
   }
-
-  const data = await response.json();
-  return data;
+  return await response.json();
 };
 
 // --- アイコンコンポーネント ---
-// SVGアイコンは別途コンポーネント化すると管理しやすくなります
-
 const BellIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +123,6 @@ const BellIcon = () => (
     />
   </svg>
 );
-
 const ChatBubbleOvalLeftIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +139,6 @@ const ChatBubbleOvalLeftIcon = () => (
     />
   </svg>
 );
-
 const HeartIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +155,6 @@ const HeartIcon = () => (
     />
   </svg>
 );
-
 const BookmarkIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +171,6 @@ const BookmarkIcon = () => (
     />
   </svg>
 );
-
 const PencilIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -198,31 +190,24 @@ const PencilIcon = () => (
 
 // --- 投稿カードコンポーネント ---
 const PostCard = ({ post }: { post: Post }) => {
-  // プロフィール画像がない場合はデフォルト画像を使用
   const profileImageUrl =
     post.author.profile_image_url || "/images/default-avatar.png";
-
   return (
     <div className="bg-white p-4">
       <div className="flex items-start space-x-3">
-        {/* ユーザーアイコン */}
         <div className="flex-shrink-0">
           <Image
             src={profileImageUrl}
             alt={post.author.username}
             width={48}
             height={48}
-            className="rounded-full object-cover bg-gray-200" // 画像読み込み中の背景色
+            className="rounded-full object-cover bg-gray-200"
           />
         </div>
-
         <div className="flex-1">
-          {/* ユーザー名 (display_nameがあればそちらを優先) */}
           <p className="font-bold text-text-primary">
             {post.author.display_name || post.author.username}
           </p>
-
-          {/* タグ */}
           <div className="flex flex-wrap gap-2 my-2">
             {post.tags.map((tag) => (
               <span
@@ -233,27 +218,20 @@ const PostCard = ({ post }: { post: Post }) => {
               </span>
             ))}
           </div>
-
-          {/* 投稿内容 */}
           <p className="text-text-primary whitespace-pre-line my-2">
             {post.content}
           </p>
-
-          {/* 投稿画像 (複数の画像に対応) */}
           {post.images && post.images.length > 0 && (
             <div className="mt-3">
-              {/* とりあえず最初の1枚だけ表示する */}
               <Image
                 src={post.images[0].image_url}
                 alt="投稿画像"
-                width={300} // widthとheightはレスポンシブ対応のため実際にはCSSで調整
+                width={300}
                 height={200}
                 className="rounded-lg object-cover w-full"
               />
             </div>
           )}
-
-          {/* リアクション */}
           <div className="flex items-center space-x-5 text-gray-500 mt-3">
             <div className="flex items-center space-x-1">
               <ChatBubbleOvalLeftIcon />
@@ -279,14 +257,10 @@ export default function TimelinePage() {
   const [activeTab, setActiveTab] = useState("すべて");
   const tabs = ["すべて", "フォロー", "ご近所さん", "イベント", "グルメ"];
 
-  // 投稿データを管理するためのステートを追加
   const [posts, setPosts] = useState<Post[]>([]);
-  // ローディング状態を管理するステート
   const [isLoading, setIsLoading] = useState(true);
-  // エラー状態を管理するステート
   const [error, setError] = useState<string | null>(null);
 
-  // ページ読み込み時にAPIを呼び出す
   useEffect(() => {
     const loadPosts = async () => {
       try {
@@ -295,25 +269,23 @@ export default function TimelinePage() {
         const fetchedPosts = await fetchTimelinePosts();
         setPosts(fetchedPosts);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "不明なエラーが発生しました"
+        console.error(
+          "APIからのデータ取得に失敗しました。開発用にダミーデータを表示します。",
+          err
         );
-        console.error(err);
+        setPosts(dummyPosts); // ダミーデータを代わりにセットする
+        // setError("APIサーバーに接続できませんでした。"); // 開発中はエラー表示をオフにしても良い
       } finally {
         setIsLoading(false);
       }
     };
-
     loadPosts();
-  }, []); // 第2引数の配列が空なので、このeffectはマウント時に1度だけ実行される
+  }, []);
 
-  // TODO: activeTabに応じて表示する投稿をフィルタリングするロジックをここに追加
-  // 今はAPIから取得したデータをそのまま使う
   const filteredPosts = posts;
 
-  // ローディング中やエラーの場合の表示を追加
   if (isLoading) {
-    return <div>ローディング中...</div>; // ここは後でスピナーなどに置き換える
+    return <div>ローディング中...</div>;
   }
   if (error) {
     return <div>エラーが発生しました: {error}</div>;
@@ -321,7 +293,6 @@ export default function TimelinePage() {
 
   return (
     <div className="flex flex-col h-full bg-background-primary">
-      {/* 1. ヘッダー */}
       <header className="flex justify-between items-center p-4 bg-white border-b sticky top-0 z-10">
         <h1 className="text-xl font-bold text-text-primary">Timeline</h1>
         <button>
@@ -329,7 +300,6 @@ export default function TimelinePage() {
         </button>
       </header>
 
-      {/* 2. タブバー */}
       <nav className="bg-white border-b sticky top-[73px] z-10">
         <div className="flex space-x-4 px-4 overflow-x-auto whitespace-nowrap">
           {tabs.map((tab) => (
@@ -348,7 +318,6 @@ export default function TimelinePage() {
         </div>
       </nav>
 
-      {/* 3. 投稿リスト */}
       <main className="flex-1 overflow-y-auto">
         <div className="divide-y divide-gray-200">
           {filteredPosts.map((post) => (
@@ -357,15 +326,11 @@ export default function TimelinePage() {
         </div>
       </main>
 
-      {/* 4. 新規投稿ボタン */}
       <div className="fixed bottom-24 right-5">
         <button className="bg-brand-blue text-white p-4 rounded-full shadow-lg hover:bg-opacity-90 transition-opacity">
           <PencilIcon />
         </button>
       </div>
-
-      {/* 5. フッターナビゲーション */}
-      {/* フッターは後ほどコンポーネント化するとのことなので、このセクションは実装しません */}
     </div>
   );
 }
