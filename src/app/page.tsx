@@ -77,6 +77,14 @@ export default function Home() {
           </li>
           <li>
             <Link
+              href="/mypage/notifications"
+              className="text-3xl text-blue-600 underline hover:text-blue-800"
+            >
+              My Page Notifications
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/compose"
               className="text-3xl text-blue-600 underline hover:text-blue-800"
             >

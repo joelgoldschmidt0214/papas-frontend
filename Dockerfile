@@ -10,6 +10,13 @@ RUN npm ci
 
 # ソースコードをコピーして、プロダクションビルドを実行
 COPY . .
+
+# ↓↓↓↓ ここに2行追加します ↓↓↓↓
+# ビルド引数として NEXT_PUBLIC_API_URL を定義
+ARG NEXT_PUBLIC_API_URL
+# npm run build が参照できるように、環境変数として設定
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 # 環境変数が必要なビルドの場合、ここで --build-arg を使って渡す
 RUN npm run build
 
