@@ -16,7 +16,7 @@ export default function Login() {
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     // TODO: バリデーション & API 連携
-    router.push("/login/confirm");
+    router.push("/home");
   };
 
   // 共通コンテナ（Header/Main で完全に揃える）
@@ -42,7 +42,7 @@ export default function Login() {
             <Image src={ICONS.arrowLeft} alt="戻る" width={24} height={24} />
           </Link>
           <h1 className="pt-20 pb-2 text-[24px] font-bold tracking-[-0.48px] text-text-primary">
-            ログイン
+            myTOKYO GAS IDでログイン
           </h1>
         </div>
       </header>

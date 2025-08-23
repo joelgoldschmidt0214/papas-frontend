@@ -7,6 +7,7 @@
 import { useState, useMemo, useEffect } from "react";
 import type { FC } from "react";
 
+
 // --- 型定義 ---
 // APIから取得するアンケートデータの型を定義します。
 // バックエンドの仕様（er_2025-08-19.md や API_USAGE_EXAMPLES.md）と整合性を取ることが重要です。
