@@ -16,7 +16,7 @@ export default function Login() {
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     // TODO: バリデーション & API 連携
-    router.push("/home");
+    router.push("/loading");
   };
 
   // 共通コンテナ（Header/Main で完全に揃える）
@@ -41,7 +41,7 @@ export default function Login() {
           >
             <Image src={ICONS.arrowLeft} alt="戻る" width={24} height={24} />
           </Link>
-          <h1 className="pt-20 pb-2 text-[24px] font-bold tracking-[-0.48px] text-text-primary">
+          <h1 className="pt-10 pb-4 text-[24px] font-bold tracking-[-0.48px] text-text-primary">
             myTOKYO GAS IDでログイン
           </h1>
         </div>
@@ -123,7 +123,7 @@ export default function Login() {
                 href="#"
                 className="inline-flex h-[61px] w-full items-center justify-center rounded-[10px] border border-brand-blue bg-white px-4 text-[19px] font-bold tracking-[-0.41px] text-brand-blue shadow-sm transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/50 focus-visible:ring-offset-2"
               >
-                はじめてご利用の方
+                はじめてご利用の方 (未実装)
               </Link>
 
               {/* 会員登録について（ボタン直下） */}
