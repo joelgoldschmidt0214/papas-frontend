@@ -21,7 +21,7 @@ export default function Menubar({ active = "home" }: Props) {
   const items: Array<{ key: Tab; href: string; icon: string; label: string }> = [
     { key: "home", href: "/home", icon: ICONS.home, label: "ホーム" },
     { key: "timeline", href: "/timeline", icon: ICONS.chat, label: "タイムライン" },
-    { key: "survey", href: "/survey", icon: ICONS.paper, label: "アンケート" },
+    { key: "survey", href: "/surveys", icon: ICONS.paper, label: "アンケート" },
     { key: "mypage", href: "/mypage", icon: ICONS.profile, label: "マイページ" },
   ];
 

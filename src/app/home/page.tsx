@@ -1,115 +1,170 @@
 "use client";
+
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { PostDataLoader } from "@/components/functional/PostDataLoader";
+import Menubar from "@/components/ui/menubar";
+import BtnNotice from "@/components/ui/BtnNotice";
 
-const TEXT = {
-  tagline: "-あなたの想いが、まちを灯す-",
-  login: "myTOKYOGASでログイン",
-  guest: "未契約者の方はこちら",
-  powered: "powered by TOKYOGAS",
-  brandAlt: "TOKYO GAS ロゴ",
-  appLogoAlt: "TOMOSU メインロゴ（炎アイコン）",
-  appFontAlt: "TOMOSU ロゴフォント",
+/** 画像・アイコンのパス */
+const IMG = {
+  bg: "/images/background-img.jpg",      // 1170x1800（縦長）
+  banner: "/images/banner_home.jpg",
+  avatar: "/images/profile_icon.png",
+  town: "/icons/town.svg",
+  compose: "/icons/btn-compose.svg",
 };
 
-const PATHS = {
-  login: "/login",
-  guest: "/guest", // TODO: 遷移先が未確定の場合は「#」等に変更
-  appLogo: "/images/app_logo.png",
-  appFontLogo: "/images/app_logo_font.png",
-  brandLogo: "/icons/brand_logo.svg",
-};
+/** 吹き出し（共通） */
+function Bubble({
+  text,
+  left,
+  top,
+  width,
+  href,
+  ariaLabel,
+}: {
+  text: string;
+  left: string;   // 例 "75%"
+  top: string;    // 例 "33%"
+  width?: string; // 例 "56%"
+  href?: string;
+  ariaLabel?: string;
+}) {
+  const style: React.CSSProperties = { left, top, ...(width ? { width } : {}) };
+  const classes =
+    "absolute -translate-x-1/2 inline-flex items-center justify-center " +
+    "rounded-full border border-brand-primary/30 bg-white/75 px-3 py-1 shadow " +
+    "text-[11px] text-text-primary backdrop-blur-[2px] " +
+    "transition-transform duration-400 ease-out motion-safe:hover:scale-[1.12] motion-safe:hover:rotate-1";
+  const content = <span className="truncate text-center">{text}</span>;
 
-export default function Home() {
+  return href ? (
+    <Link href={href} aria-label={ariaLabel ?? text} className={classes} style={style}>
+      {content}
+    </Link>
+  ) : (
+    <div aria-label={ariaLabel ?? text} className={classes} style={style}>
+      {content}
+    </div>
+  );
+}
+
+export default function Mypage() {
   return (
-    <>
-      {/* ページが読み込まれた瞬間にデータ取得を開始するために設置します */}
-      {/* このコンポーネントは画面には何も表示しません */}
-      <PostDataLoader />
+    // アプリ全体：中央寄せ・最大幅 440px、最大高さ 930px でスクロール抑止
+    <div className="relative mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-white max-h-[930px] overflow-hidden">
+      <div className="flex-1">
+        {/* 上余白 40px */}
+        <div className="h-10" aria-hidden />
 
-      <div className="flex min-h-screen w-full flex-col bg-white">
-        {/* Header */}
-        <header className="pt-20" aria-label="アプリのヘッダー">
-          <h1 className="sr-only">TOMOSU</h1>
+        {/* HEADER（通知ボタン配置のため relative） */}
+        <header className="relative px-4">
+          <div className="flex items-center justify-between">
+            {/* 左：プロフィール + 地域 */}
+            <div className="flex items-center gap-3">
+              <Image
+                src={IMG.avatar}
+                alt="プロフィール画像"
+                width={45}
+                height={45}
+                className="rounded-full"
+                priority
+              />
+              <div>
+                {/* 地域バッジ：左に town.svg */}
+                <div className="inline-flex items-center gap-1.5 rounded-md border border-brand-blue/50 bg-brand-secondary px-2 py-0.5 text-[12px] text-text-primary">
+                  <Image src={IMG.town} alt="" width={16} height={16} className="h-4 w-4" />
+                  <span>東京都江東区</span>
+                </div>
+                <p className="mt-1 text-[14px] font-bold text-text-primary">username</p>
+              </div>
+            </div>
+
+            {/* 右：通知ボタン（小さめ・右余白 right-4） */}
+            <div className="pointer-events-auto absolute right-4 top-1/2 -translate-y-1/2">
+              <BtnNotice noticeState="new" size={20} href="/notifications" ariaLabel="お知らせ" />
+            </div>
+          </div>
         </header>
 
-        {/* Main */}
-        <main className="flex flex-1 flex-col items-center px-4" role="main">
-          {/* サブタイトル */}
-          <p
-            className="mt-12 mb-10 text-center text-[20px] font-bold tracking-[-0.4px] text-[#3c3c3c]"
-            aria-label="サブタイトル"
-          >
-            {TEXT.tagline}
-          </p>
+        {/* 区切り線（フルブリードで横いっぱい） */}
+        <div className="my-3 h-[0.5px] w-full bg-black/10" />
 
-          {/* メインロゴ（炎アイコン） */}
-          <div className="mt-4 mb-4 flex justify-center">
+        {/* BANNER（横幅優先・比率維持） */}
+        <section className="w-full">
+          <Image
+            src={IMG.banner}
+            alt="TOKYO GAS からのお知らせをチェック！"
+            width={393}
+            height={65}
+            sizes="(max-width: 440px) 100vw, 440px"
+            className="block h-auto w-full"
+            priority
+          />
+          <div className="my-3 h-[0.5px] w-full bg-black/10" />
+        </section>
+
+        {/* 背景イラスト（横幅優先） */}
+        <main className="w-full">
+          <div className="relative w-full -translate-y-[6px]">
             <Image
-              src={PATHS.appLogo}
-              alt={TEXT.appLogoAlt}
-              width={144}
-              height={168}
+              src={IMG.bg}
+              alt="まちの背景イラスト"
+              width={1170}
+              height={1800}
+              sizes="(max-width: 440px) 100vw, 440px"
+              className="block h-auto w-full"
               priority
-              className="h-auto w-28 md:w-32"
             />
-          </div>
 
-          {/* TOMOSUロゴフォント */}
-          <div className="mb-6 flex justify-center">
-            <Image
-              src={PATHS.appFontLogo}
-              alt={TEXT.appFontAlt}
-              width={228}
-              height={65}
-              className="h-auto w-44 md:w-48"
+            {/* ===== 背景イラスト上の吹き出し（位置は％で微調整可能） ===== */}
+            {/* ① 東京ガスからのお知らせです。 */}
+            <Bubble
+              text="東京ガスからのお知らせです。"
+              left="76%"
+              top="15%"
+              width="180px"
             />
-          </div>
 
-          {/* powered by（サブテキスト） */}
-          <div className="mb-8 flex justify-center">
-            <span className="text-xs text-[#c4c4c4]">{TEXT.powered}</span>
-          </div>
+            {/* ② メンテナンスのお知らせ。 */}
+            <Bubble
+              text="メンテナンスのお知らせ♪"
+              left="68%"
+              top="38%"
+              width="160px"
+            />
 
-          {/* アクションボタン群 */}
-          <div className="mb-8 flex w-full max-w-[343px] flex-col items-stretch gap-4">
-            <Link
-              href={PATHS.login}
-              aria-label="myTOKYOGASでログイン"
-              className="inline-flex h-[61px] items-center justify-center rounded-[10px] bg-[#1b6aac] text-[19px] font-bold tracking-[-0.41px] text-white outline-none transition-[opacity,box-shadow] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1b6aac]/60 hover:opacity-95 active:opacity-90"
-            >
-              {TEXT.login}
-            </Link>
+            {/* ③ 9/6のイベントをチェック！ */}
+            <Bubble
+              text="9/6のイベントをチェック！"
+              left="32%"
+              top="48%"
+              width="180px"
+            />
 
-            <Link
-              href={PATHS.guest}
-              aria-label="未契約者の方はこちら"
-              className="inline-flex h-[61px] items-center justify-center rounded-[10px] bg-[#dedede] text-[19px] font-bold tracking-[-0.41px] text-[#5a5a5a] outline-none transition-[opacity,box-shadow] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#9e9e9e]/50 hover:opacity-95 active:opacity-90"
-            >
-              {TEXT.guest}
-            </Link>
+            {/* ④ 保育園情報が更新されました。 */}
+            <Bubble
+              text="保育園情報が更新されました。"
+              left="54%"
+              top="62%"
+              width="180px"
+            />
           </div>
         </main>
-
-        {/* Footer */}
-        <footer
-          className="mt-auto mb-6 flex w-full items-center justify-center px-4"
-          aria-label="フッター"
-        >
-          <div className="w-full max-w-[120px]">
-            <Image
-              src={PATHS.brandLogo}
-              alt={TEXT.brandAlt}
-              width={100}
-              height={32}
-              priority
-              className="h-auto w-full"
-            />
-          </div>
-        </footer>
       </div>
-    </>
+
+      {/* 投稿ボタン（右下固定・右余白 right-4、Menubar を避ける高さ） */}
+      <Link
+        href="/compose"
+        className="fixed bottom-[100px] right-4 z-50 inline-flex size-14 items-center justify-center rounded-full bg-brand-blue shadow-md"
+        aria-label="投稿する"
+      >
+        <Image src={IMG.compose} alt="" width={60} height={60} />
+      </Link>
+
+      {/* 共通 Menubar */}
+      <Menubar active="mypage" />
+    </div>
   );
 }

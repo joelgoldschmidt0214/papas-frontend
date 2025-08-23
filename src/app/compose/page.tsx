@@ -48,14 +48,14 @@ export default function Compose() {
   ];
 
   const handleCancel = () => {
-    router.push("/mypage");
+    router.push("/timeline");
   };
 
   const handlePost = () => {
     if (postText.trim()) {
       // TODO: API呼び出しでpost送信
       console.log("投稿:", postText, "タグ:", selectedTags);
-      router.push("/mypage");
+      router.push("/timeline");
     }
   };
 

@@ -46,7 +46,7 @@ const dummyNotificationsData: Notification[] = [
     actor: {
       profileImageUrl: '/icons/icon_image_01.svg',
     },
-    targetUrl: '/mypage/profile',
+    targetUrl: '/mypage',
     createdAt: '2025-08-22T10:00:00Z',
   },
   {
@@ -62,21 +62,21 @@ const dummyNotificationsData: Notification[] = [
     actor: {
       profileImageUrl: '/icons/icon_image_01.svg',
     },
-    targetUrl: '/mypage/profile',
+    targetUrl: '/mypage',
     createdAt: '2025-08-22T09:30:00Z',
   },
   {
     id: 3,
     type: 'new_survey',
     message: <span className="text-brand-blue">あなたのまちに新しいアンケートが公開されました</span>,
-    targetUrl: '/surveys?tab=unanswered',
+    targetUrl: '/surveys',
     createdAt: '2025-08-21T15:00:00Z',
   },
   {
     id: 4,
     type: 'survey_response',
     message: <span className="text-brand-blue">まちのアンケートに回答しました</span>,
-    targetUrl: '/surveys?tab=answered',
+    targetUrl: '/surveys',
     createdAt: '2025-08-20T18:00:00Z',
   },
 ];
@@ -96,7 +96,7 @@ const NotificationsPage = () => {
     <div className="flex flex-col h-full bg-white text-text-primary">
       {/* ヘッダーエリア */}
       <header className="flex items-center justify-between p-2 h-12 bg-white border-b sticky top-0 z-10">
-        <Link href="/mypage/profile" className="p-2">
+        <Link href="/home" className="p-2">
           <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
         </Link>
         <h1 className="font-bold text-base absolute left-1/2 -translate-x-1/2">

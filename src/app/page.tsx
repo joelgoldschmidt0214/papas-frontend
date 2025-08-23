@@ -18,15 +18,15 @@ export default function Home() {
           <ul className="space-y-8">
             <li>
               <Link
-                href="/home"
+                href="/top"
                 className="text-3xl pb-8 text-blue-600 underline hover:text-blue-800"
               >
-                Home
+                Top
               </Link>
             </li>
             <li>
               <Link
-                href="/login"
+                href="/mytokyogas-login"
                 className="text-3xl text-blue-600 underline hover:text-blue-800"
               >
                 Login
@@ -34,66 +34,10 @@ export default function Home() {
             </li>
             <li>
               <Link
-                href="/login/confirm"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
+                href="/home"
+                className="text-3xl pb-8 text-blue-600 underline hover:text-blue-800"
               >
-                Login Confirm
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage/profile"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page Profile
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage/profile/edit"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page Profile Edit
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage/following"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page Following
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage/followers"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page Followers
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/mypage/notifications"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                My Page Notifications
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/compose"
-                className="text-3xl text-blue-600 underline hover:text-blue-800"
-              >
-                Compose
+                Home
               </Link>
             </li>
             <li>
@@ -110,6 +54,54 @@ export default function Home() {
                 className="text-3xl text-blue-600 underline hover:text-blue-800"
               >
                 Surveys
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/mypage"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Mypage
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/profile-edit"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Profile Edit
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/compose"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Compose
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/following"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Following
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/followers"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Followers
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/notifications"
+                className="text-3xl text-blue-600 underline hover:text-blue-800"
+              >
+                Notifications
               </Link>
             </li>
           </ul>
