@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // public/icons 配下の使用アイコン
 const ICONS = {
@@ -11,11 +12,11 @@ const ICONS = {
 
 export default function Login() {
   const [showPwd, setShowPwd] = React.useState(false);
-
+  const router = useRouter();
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     // TODO: バリデーション & API 連携
-    window.location.href = "/login/confirm";
+    router.push("/login/confirm");
   };
 
   // 共通コンテナ（Header/Main で完全に揃える）
@@ -80,11 +81,20 @@ export default function Login() {
                 />
                 <button
                   type="button"
-                  aria-label={showPwd ? "パスワードを非表示にする" : "パスワードを表示する"}
+                  aria-label={
+                    showPwd
+                      ? "パスワードを非表示にする"
+                      : "パスワードを表示する"
+                  }
                   onClick={() => setShowPwd((v) => !v)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2"
                 >
-                  <Image src={ICONS.show} alt="表示切替" width={24} height={24} />
+                  <Image
+                    src={ICONS.show}
+                    alt="表示切替"
+                    width={24}
+                    height={24}
+                  />
                 </button>
               </div>
             </div>
@@ -103,7 +113,9 @@ export default function Login() {
                 className="inline-flex h-[61px] w-full flex-col items-center justify-center gap-1 rounded-[10px] bg-brand-blue bg-[#1B6AAC] px-4 text-white leading-normal shadow-sm transition-opacity hover:opacity-95 active:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/60 focus-visible:ring-offset-2"
               >
                 <span className="text-[12px]">上記に同意して</span>
-                <span className="text-[19px] font-bold tracking-[-0.41px]">ログイン</span>
+                <span className="text-[19px] font-bold tracking-[-0.41px]">
+                  ログイン
+                </span>
               </button>
 
               {/* はじめてご利用の方：高さを合わせる */}
@@ -122,27 +134,42 @@ export default function Login() {
 
             {/* お困りの方はこちら */}
             <section className="mt-8" aria-labelledby="support-heading">
-              <h2 id="support-heading" className="mb-3 text-base font-bold text-text-primary">
+              <h2
+                id="support-heading"
+                className="mb-3 text-base font-bold text-text-primary"
+              >
                 お困りの方はこちら
               </h2>
               <ul className="space-y-3 text-[14px] text-brand-blue">
                 <li>
-                  <Link href="https://support.tokyo-gas.co.jp/faq/show/5697?site_domain=open&mtglink=support100009" className="underline underline-offset-2">
+                  <Link
+                    href="https://support.tokyo-gas.co.jp/faq/show/5697?site_domain=open&mtglink=support100009"
+                    className="underline underline-offset-2"
+                  >
                     ログインIDを忘れた場合
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://members.tokyo-gas.co.jp/password-reset/email-input" className="underline underline-offset-2">
+                  <Link
+                    href="https://members.tokyo-gas.co.jp/password-reset/email-input"
+                    className="underline underline-offset-2"
+                  >
                     パスワードを忘れた場合
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://support.tokyo-gas.co.jp/category/show/914?site_domain=open&mtglink=support100010" className="underline underline-offset-2">
+                  <Link
+                    href="https://support.tokyo-gas.co.jp/category/show/914?site_domain=open&mtglink=support100010"
+                    className="underline underline-offset-2"
+                  >
                     ログインについてのよくあるご質問
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://members.tokyo-gas.co.jp/contents/public/about/guide-signup-first.html" className="underline underline-offset-2">
+                  <Link
+                    href="https://members.tokyo-gas.co.jp/contents/public/about/guide-signup-first.html"
+                    className="underline underline-offset-2"
+                  >
                     初回ログインの手順をみる
                   </Link>
                 </li>
