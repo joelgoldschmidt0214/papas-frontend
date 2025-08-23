@@ -1,8 +1,7 @@
 // src/app/timeline/page.tsx
 "use client";
 
-// useEffectを再度インポートします
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import EngageButton from "@/components/ui/EngageButton";
 import Menubar from "@/components/ui/menubar";
@@ -45,6 +44,8 @@ function PostCard({ post }: { post: Post }) {
           <p className="text-[14px] font-bold text-text-primary">
             {displayName}
           </p>
+
+          {/* タグ */}
           <div className="mt-1.5 flex flex-wrap gap-2">
             {post.tags.map((t) => (
               <span
@@ -55,9 +56,13 @@ function PostCard({ post }: { post: Post }) {
               </span>
             ))}
           </div>
+
+          {/* 本文 */}
           <p className="my-2 whitespace-pre-line text-[14px] leading-relaxed text-text-primary">
             {post.content}
           </p>
+
+          {/* 画像（1枚想定） */}
           {post.images?.length > 0 && (
             <div className="mt-2 overflow-hidden rounded-lg">
               <Image
@@ -69,6 +74,8 @@ function PostCard({ post }: { post: Post }) {
               />
             </div>
           )}
+
+          {/* エンゲージメント（数値は固定） */}
           <div className="mt-3 flex items-center gap-5 text-text-secondary">
             <EngageButton
               iconDefault={ICON.comment}
@@ -97,8 +104,15 @@ function PostCard({ post }: { post: Post }) {
 
 /* ============ タイムラインページ本体 ============ */
 export default function TimelinePage() {
-  const [activeTab, setActiveTab] = useState("すべて");
-  const tabs = ["すべて", "フォロー", "ご近所さん", "イベント", "グルメ"];
+  const tabs = [
+    "すべて",
+    "フォロー",
+    "ご近所さん",
+    "イベント",
+    "グルメ",
+  ] as const;
+  type Tab = (typeof tabs)[number];
+  const [activeTab, setActiveTab] = useState<Tab>("すべて");
 
   const { posts, isLoading, error, fetchPosts } = usePosts();
 
@@ -131,12 +145,19 @@ export default function TimelinePage() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-white">
+      {/* 上余白（約40px） */}
       <div className="h-10" aria-hidden />
+
+      {/* 中央ロゴ（40px） */}
       <div className="flex items-center justify-center">
         <Image src={ICON.logo} alt="TOMOSU" width={40} height={40} />
       </div>
+      {/* ロゴ下の全幅の線 */}
       <div className="my-3 h-[0.5px] w-full bg-black/10" />
+
+      {/* タブ（5分割・タブ下のグレー線なし、アクティブのみ下線） */}
       <nav className="sticky top-0 z-10 bg-white">
+        {/* ★ 親ラッパーの className は固定（Hydration対策） */}
         <div className="grid w-full grid-cols-5">
           {tabs.map((tab) => {
             const active = activeTab === tab;
@@ -157,6 +178,7 @@ export default function TimelinePage() {
           })}
         </div>
       </nav>
+      {/* 投稿一覧 */}
       <main className="flex-1">
         <div className="divide-y divide-gray-200/70">
           {filtered.map((post) => (
@@ -164,6 +186,8 @@ export default function TimelinePage() {
           ))}
         </div>
       </main>
+
+      {/* 投稿ボタン（apphome と同じ仕様） */}
       <button
         type="button"
         aria-label="投稿する"
@@ -171,6 +195,8 @@ export default function TimelinePage() {
       >
         <Image src={ICON.compose} alt="" width={32} height={32} />
       </button>
+
+      {/* 共通フッター */}
       <Menubar active="timeline" />
     </div>
   );

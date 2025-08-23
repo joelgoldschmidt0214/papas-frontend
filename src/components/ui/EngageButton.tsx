@@ -10,8 +10,8 @@ interface EngageButtonProps {
   iconActive: string;
   count: number;
   ariaLabel: string;
-  active?: boolean;      // ← ここに '?' がありますか？
-  onToggle?: () => void; // ← ここに '?' がありますか？
+  active?: boolean;
+  onToggle?: () => void;
 }
 
 export default function EngageButton({
@@ -19,8 +19,8 @@ export default function EngageButton({
   iconActive,
   count,
   ariaLabel,
-  active = false,       // ← ここにデフォルト値がありますか？
-  onToggle = () => {},  // ← ここにデフォルト値がありますか？
+  active = false,
+  onToggle = () => {},
 }: EngageButtonProps) {
   return (
     <button
