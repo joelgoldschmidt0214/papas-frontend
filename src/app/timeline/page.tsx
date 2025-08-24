@@ -28,7 +28,7 @@ function PostCard({ post }: { post: Post }) {
   const [liked, setLiked] = useState(post.is_liked);
   const [bookmarked, setBookmarked] = useState(post.is_bookmarked);
 
-  const avatar = post.author.profile_image_url || "/images/default-avatar.png";
+  const avatar = post.author.profile_image_url; // || "/icons/icon_image_01.svg";
   const displayName = post.author.display_name || post.author.username;
   return (
     <article className="bg-white px-4 py-3">
