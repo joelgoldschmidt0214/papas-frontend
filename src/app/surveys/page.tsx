@@ -19,6 +19,7 @@ type Survey = {
 };
 
 // --- ダミーデータ ---
+
 const dummySurveys: Survey[] = [
   {
     id: 1,
@@ -59,7 +60,7 @@ const dummySurveys: Survey[] = [
 ];
 
 // --- アンケートカードコンポーネント ---
-const SurveyCard: FC<{ survey: Survey }> = ({ survey }) => {
+const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
   const audienceLabelClass =
     survey.targetAudience === "myTOKYOGAS会員限定"
       ? "bg-brand-secondary text-brand-blue"
@@ -68,8 +69,8 @@ const SurveyCard: FC<{ survey: Survey }> = ({ survey }) => {
   return (
     <div
       className={`
-        relative cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm
-        transition-all duration-200 hover:shadow-md
+        group relative rounded-lg border border-gray-200 bg-white p-4 shadow-sm
+        transition-all duration-200 group-hover:shadow-md
         ${survey.isAnswered ? "opacity-70" : ""}
       `}
     >
@@ -136,13 +137,18 @@ export default function SurveysPage() {
     }
   }, [activeTab, surveys]);
 
-  // タブボタン用の共通スタイル
+  // タブボタン用の共通スタイルを変数として定義
   const tabBaseStyle = "py-3 text-center text-sm font-semibold transition-colors";
   const activeTabStyle = "border-b-2 border-brand-blue text-brand-blue";
   const inactiveTabStyle = "border-b-2 border-transparent text-text-secondary";
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-background-primary">
+    <div
+      className={`
+        relative mx-auto flex h-screen w-full max-w-[440px]
+        flex-col bg-background-primary
+      `}
+    >
       <header className="flex-shrink-0 bg-white shadow-sm">
         <div className="flex items-center justify-between p-2 h-12">
           <Link href="/home" className="p-2">
@@ -154,13 +160,22 @@ export default function SurveysPage() {
           <div className="w-8"></div>
         </div>
         <nav className="grid grid-cols-3">
-          <button onClick={() => setActiveTab("all")} className={`${tabBaseStyle} ${activeTab === "all" ? activeTabStyle : inactiveTabStyle}`}>
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`${tabBaseStyle} ${activeTab === "all" ? activeTabStyle : inactiveTabStyle}`}
+          >
             すべて
           </button>
-          <button onClick={() => setActiveTab("unanswered")} className={`${tabBaseStyle} ${activeTab === "unanswered" ? activeTabStyle : inactiveTabStyle}`}>
+          <button
+            onClick={() => setActiveTab("unanswered")}
+            className={`${tabBaseStyle} ${activeTab === "unanswered" ? activeTabStyle : inactiveTabStyle}`}
+          >
             未回答
           </button>
-          <button onClick={() => setActiveTab("answered")} className={`${tabBaseStyle} ${activeTab === "answered" ? activeTabStyle : inactiveTabStyle}`}>
+          <button
+            onClick={() => setActiveTab("answered")}
+            className={`${tabBaseStyle} ${activeTab === "answered" ? activeTabStyle : inactiveTabStyle}`}
+          >
             回答済
           </button>
         </nav>
@@ -168,7 +183,17 @@ export default function SurveysPage() {
 
       <main className="flex-1 space-y-4 overflow-y-auto p-4">
         {filteredSurveys.length > 0 ? (
-          filteredSurveys.map((survey) => <SurveyCard key={survey.id} survey={survey} />)
+          filteredSurveys.map((survey) =>
+            survey.isAnswered ? (
+              <div key={survey.id} className="cursor-not-allowed">
+                <SurveyCardContent survey={survey} />
+              </div>
+            ) : (
+              <Link key={survey.id} href={`/surveys/${survey.id}`} className="block">
+                <SurveyCardContent survey={survey} />
+              </Link>
+            )
+          )
         ) : (
           <div className="pt-10 text-center text-gray-500">
             <p>表示するアンケートはありません。</p>
