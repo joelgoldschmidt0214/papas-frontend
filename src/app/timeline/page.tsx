@@ -232,7 +232,8 @@ export default function TimelinePage() {
                   ref={active ? activeTabRef : null}
                   onClick={() => setActiveTab(tab)}
                   className={`
-                    flex-shrink-0 border-b-2 py-2.5 px-4 text-sm font-semibold transition-colors
+                    flex-shrink-0 border-b-2 py-2.5 text-sm font-semibold transition-colors
+                    w-1/5 min-w-16 flex justify-center
                     ${
                       active
                         ? "border-brand-primary text-brand-primary"
