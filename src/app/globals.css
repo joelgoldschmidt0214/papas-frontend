@@ -34,3 +34,25 @@ input:-webkit-autofill:hover {
   border: 1px solid #1B6AAC !important;           /* brand.blue */
   box-shadow: 0 0 0 2px #1B6AAC !important;       /* 簡易 ring 代替 */
 }
+
+/* GANTZ風の表示アニメーションを定義 */
+@keyframes reveal-from-bottom {
+  /* 開始時（0%）: 要素の上辺から100%の位置で切り抜き、ほぼ完全に非表示にする */
+  from {
+    clip-path: inset(95% 0 0 0);
+  }
+  /* 終了時（100%）: 切り抜きをなくし、完全に表示する */
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* 上記のアニメーションを適用するためのユーティリティクラス */
+.animate-reveal-from-bottom {
+  /*
+    animation-fill-mode: forwards; が非常に重要です。
+    これがないと、アニメーション終了後に最初の状態（非表示）に戻ってしまいます。
+    'forwards' を指定することで、アニメーションが最後の状態（完全表示）で停止します。
+  */
+  animation: reveal-from-bottom 1.0s ease-in-out 3 forwards;
+}
