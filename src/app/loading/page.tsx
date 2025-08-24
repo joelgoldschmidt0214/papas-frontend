@@ -17,7 +17,7 @@ export default function Loading() {
 
   useEffect(() => {
     // スプラッシュ画面全体の表示時間を設定（ミリ秒単位でアニメーション時間より長くします）
-    const totalDisplayTime = 1500;
+    const totalDisplayTime = 3500;
 
     const timer = setTimeout(() => {
       setIsVisible(false); // フェードアウト開始
@@ -32,41 +32,37 @@ export default function Loading() {
 
   return (
     <>
-      {/* ページが読み込まれた瞬間にデータ取得を開始するために設置します */}
-      {/* このコンポーネントは画面には何も表示しません */}
       <PostDataLoader />
-      <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-white transition-opacity duration-300 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-        aria-hidden={!isVisible}
-      >
+      {/* ★★★ ここからが大きな変更点 ★★★ */}
+      {/* fixedをやめ、flexboxで中央揃えを実現する */}
+      {/* flex-1: 親要素(flex-col)の残りの空間をすべて埋める */}
+      <div className="flex flex-1 flex-col items-center justify-center">
         <p className="text-xl font-semibold text-gray-700 animate-pulse mb-8">
           あなたの街を作っています...
         </p>
         <div className="text-center">
           {/* アニメーションを適用するラッパー */}
-          <div className="mb-8 w-64">
+          <div className="mb-8 w-44">
             {" "}
             {/* w-64 の部分で画像の最大幅を調整 */}
             <Image
               src={PATHS.appLogo}
               alt="TOMOSU ロゴ"
-              width={144 * 2}
-              height={168 * 2}
+              width={144}
+              height={168}
               priority // 最初に表示される重要な画像なのでpriorityを指定
-              className="animate-reveal-from-bottom" // Step 1 で作成したクラスを適用！
+              className="animate-reveal-from-bottom w-full h-auto" // Step 1 で作成したクラスを適用！
             />
           </div>
 
           {/* TOMOSUロゴフォント */}
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 flex justify-center w-44">
             <Image
               src={PATHS.appFontLogo}
               alt="TOMOSU ロゴフォント"
-              width={228 * 2}
-              height={65 * 2}
-              className="h-auto w-44 md:w-48"
+              width={228}
+              height={65}
+              className="h-auto w-full"
             />
           </div>
         </div>

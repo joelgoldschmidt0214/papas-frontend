@@ -43,5 +43,5 @@ input:-webkit-autofill:hover {
     これがないと、アニメーション終了後に最初の状態（非表示）に戻ってしまいます。
     'forwards' を指定することで、アニメーションが最後の状態（完全表示）で停止します。
   */
-  animation: reveal-from-bottom 1.3s ease-in-out forwards;
+  animation: reveal-from-bottom 1.0s ease-in-out 3 forwards;
 }
