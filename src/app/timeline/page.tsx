@@ -1,14 +1,14 @@
 // src/app/timeline/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import EngageButton from "@/components/ui/EngageButton";
 import Menubar from "@/components/ui/menubar";
-// ContextからusePostsフックとPost型をインポートします
 import { usePosts, Post } from "@/contexts/PostContext";
 
-/* ============ 画像パス（実ファイル名に合わせる） ============ */
+/* ============ 画像パス ============ */
 const ICON = {
   logo: "/images/app_logo.png",
   compose: "/icons/btn-compose.svg",
@@ -23,13 +23,72 @@ const ICON = {
   },
 };
 
+/* ============ ダミーデータ（フォールバック用） ============ */
+/*
+  【★★★★★ 修正点 ★★★★★】
+  エラーの原因となっていた`bookmarks_count`が抜けている問題を解消するため、
+  GitHub上の`Post`型定義に合わせて、各オブジェクトに`bookmarks_count`プロパティを追加しました。
+*/
+const dummyPosts: Post[] = [
+  {
+    post_id: 1,
+    content:
+      "豊洲の近くにできた焼肉屋さん美味しかった！今なら500円クーポンがあるらしい。",
+    created_at: "2024-05-20T12:00:00Z",
+    updated_at: "2024-05-20T12:00:00Z",
+    author: {
+      user_id: 1,
+      username: "username-1",
+      display_name: "グルメな豊洲民",
+      profile_image_url: "/images/default-avatar.png",
+    },
+    images: [],
+    tags: [
+      { tag_id: 1, tag_name: "お得情報", posts_count: 101 },
+      { tag_id: 2, tag_name: "グルメ", posts_count: 250 },
+    ],
+    likes_count: 12,
+    comments_count: 1,
+    bookmarks_count: 3,
+    is_liked: false,
+    is_bookmarked: true,
+  },
+  {
+    post_id: 2,
+    content:
+      "豊洲のららぽーとに行ってきたよ！雨の日でも楽しめるから子連れに最高✨",
+    created_at: "2024-05-19T18:30:00Z",
+    updated_at: "2024-05-19T18:30:00Z",
+    author: {
+      user_id: 2,
+      username: "username-2",
+      display_name: "豊洲ママ",
+      profile_image_url: "/images/default-avatar.png",
+    },
+    images: [{ image_url: "/images/kids-space.jpg", display_order: 1 }],
+    tags: [
+      { tag_id: 3, tag_name: "おすすめ施設", posts_count: 88 },
+      { tag_id: 4, tag_name: "子育て", posts_count: 123 },
+    ],
+    likes_count: 32,
+    comments_count: 4,
+    bookmarks_count: 16,
+    is_liked: true,
+    is_bookmarked: false,
+  },
+];
+
 /* ============ 投稿カード ============ */
 function PostCard({ post }: { post: Post }) {
   const [liked, setLiked] = useState(post.is_liked);
   const [bookmarked, setBookmarked] = useState(post.is_bookmarked);
 
+  const onToggleLike = () => setLiked(!liked);
+  const onToggleBookmark = () => setBookmarked(!bookmarked);
+
   const avatar = post.author.profile_image_url || "/icons/icon_image_01.svg";
   const displayName = post.author.display_name || post.author.username;
+
   return (
     <article className="bg-white px-4 py-3">
       <div className="flex items-start gap-3">
@@ -40,12 +99,10 @@ function PostCard({ post }: { post: Post }) {
           height={48}
           className="h-12 w-12 rounded-full object-cover bg-gray-200"
         />
-        <div className="flex-1">
-          <p className="text-[14px] font-bold text-text-primary">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-text-primary truncate">
             {displayName}
           </p>
-
-          {/* タグ */}
           <div className="mt-1.5 flex flex-wrap gap-2">
             {post.tags.map((t) => (
               <span
@@ -56,13 +113,9 @@ function PostCard({ post }: { post: Post }) {
               </span>
             ))}
           </div>
-
-          {/* 本文 */}
-          <p className="my-2 whitespace-pre-line text-[14px] leading-relaxed text-text-primary">
+          <p className="my-2 whitespace-pre-line text-sm leading-relaxed text-text-primary">
             {post.content}
           </p>
-
-          {/* 画像（1枚想定） */}
           {post.images?.length > 0 && (
             <div className="mt-2 overflow-hidden rounded-lg">
               <Image
@@ -74,8 +127,6 @@ function PostCard({ post }: { post: Post }) {
               />
             </div>
           )}
-
-          {/* エンゲージメント（数値は固定） */}
           <div className="mt-3 flex items-center gap-5 text-text-secondary">
             <EngageButton
               iconDefault={ICON.comment}
@@ -84,12 +135,16 @@ function PostCard({ post }: { post: Post }) {
               ariaLabel="コメント数"
             />
             <EngageButton
+              active={liked}
+              onToggle={onToggleLike}
               iconDefault={ICON.like.default}
               iconActive={ICON.like.active}
               count={post.likes_count}
               ariaLabel="いいね"
             />
             <EngageButton
+              active={bookmarked}
+              onToggle={onToggleBookmark}
               iconDefault={ICON.bookmark.default}
               iconActive={ICON.bookmark.active}
               count={post.bookmarks_count}
@@ -110,94 +165,103 @@ export default function TimelinePage() {
     "ご近所さん",
     "イベント",
     "グルメ",
+    "子育て",
+    "お得情報",
+    "デコ活",
   ] as const;
   type Tab = (typeof tabs)[number];
   const [activeTab, setActiveTab] = useState<Tab>("すべて");
-
   const { posts, isLoading, error, fetchPosts } = usePosts();
 
-  // このコンポーネントが表示された時に、もし投稿データが空っぽなら取得処理を実行する
+  const navRef = useRef<HTMLElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
-    // データがなく、かつ現在ローディング中でもない場合に実行
     if (posts.length === 0 && !isLoading) {
-      console.log("Timeline data is empty, fetching now...");
       fetchPosts();
     }
-  }, [posts, isLoading, fetchPosts]); // これらの値が変わった時に再評価する
+  }, [posts, isLoading, fetchPosts]);
 
-  const filtered = posts;
+  useEffect(() => {
+    if (navRef.current && activeTabRef.current) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const tabRect = activeTabRef.current.getBoundingClientRect();
+      const scrollLeft =
+        navRef.current.scrollLeft +
+        tabRect.left -
+        navRect.left -
+        navRect.width / 2 +
+        tabRect.width / 2;
+      navRef.current.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    }
+  }, [activeTab]);
 
-  if (isLoading && posts.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        ローディング中...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        エラーが発生しました: {error}
-      </div>
-    );
-  }
+  const displayPosts = posts.length > 0 ? posts : dummyPosts;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-white">
-      {/* 上余白（約40px） */}
-      <div className="h-10" aria-hidden />
-
-      {/* 中央ロゴ（40px） */}
-      <div className="flex items-center justify-center">
-        <Image src={ICON.logo} alt="TOMOSU" width={40} height={40} />
-      </div>
-      {/* ロゴ下の全幅の線 */}
-      <div className="my-3 h-[0.5px] w-full bg-black/10" />
-
-      {/* タブ（5分割・タブ下のグレー線なし、アクティブのみ下線） */}
-      <nav className="sticky top-0 z-10 bg-white">
-        {/* ★ 親ラッパーの className は固定（Hydration対策） */}
-        <div className="grid w-full grid-cols-5">
-          {tabs.map((tab) => {
-            const active = activeTab === tab;
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative flex h-11 w-full items-center justify-center text-[12px] font-semibold ${
-                  active ? "text-brand-primary" : "text-text-secondary"
-                }`}
-              >
-                {tab}
-                {active && (
-                  <span className="pointer-events-none absolute bottom-0 left-0 block h-[2px] w-full bg-brand-primary" />
-                )}
-              </button>
-            );
-          })}
+    <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-white">
+      <header className="flex-shrink-0">
+        <div className="h-6" aria-hidden />
+        <div className="flex items-center justify-center">
+          <Image src={ICON.logo} alt="TOMOSU" width={40} height={40} />
         </div>
-      </nav>
-      {/* 投稿一覧 */}
-      <main className="flex-1">
-        <div className="divide-y divide-gray-200/70">
-          {filtered.map((post) => (
-            <PostCard key={post.post_id} post={post} />
-          ))}
-        </div>
+        <div className="my-2" />
+        <nav
+          ref={navRef}
+          className="overflow-x-auto whitespace-nowrap scrollbar-hide"
+        >
+          <div className="flex items-center px-2">
+            {tabs.map((tab) => {
+              const active = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  ref={active ? activeTabRef : null}
+                  onClick={() => setActiveTab(tab)}
+                  className={`
+                    flex-shrink-0 border-b-2 py-2.5 px-4 text-sm font-semibold transition-colors
+                    ${
+                      active
+                        ? "border-brand-primary text-brand-primary"
+                        : "border-transparent text-text-secondary"
+                    }
+                  `}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      </header>
+
+      <main className="flex-1 overflow-y-auto">
+        {isLoading && posts.length === 0 ? (
+          <div className="p-4 text-center text-text-secondary">
+            投稿を読み込んでいます...
+          </div>
+        ) : error ? (
+          <div className="p-4 text-center text-red-500">エラー: {error}</div>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {displayPosts.map((post) => (
+              <PostCard key={post.post_id} post={post} />
+            ))}
+          </div>
+        )}
       </main>
 
-      {/* 投稿ボタン（apphome と同じ仕様） */}
-      <button
-        type="button"
+      <Link
+        href="/compose"
         aria-label="投稿する"
-        className="fixed bottom-24 right-5 inline-flex size-14 items-center justify-center rounded-full bg-brand-blue shadow-md"
+        className="absolute bottom-24 right-5 z-20 inline-flex size-14 items-center justify-center rounded-full bg-brand-blue shadow-md"
       >
-        <Image src={ICON.compose} alt="" width={32} height={32} />
-      </button>
+        <Image src={ICON.compose} alt="" width={56} height={56} />
+      </Link>
 
-      {/* 共通フッター */}
-      <Menubar active="timeline" />
+      <div className="absolute bottom-0 left-0 right-0 z-30">
+        <Menubar active="timeline" />
+      </div>
     </div>
   );
 }
