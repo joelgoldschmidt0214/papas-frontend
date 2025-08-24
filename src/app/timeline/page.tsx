@@ -1,7 +1,7 @@
 // src/app/timeline/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import EngageButton from "@/components/ui/EngageButton";
@@ -196,7 +196,20 @@ export default function TimelinePage() {
     }
   }, [activeTab]);
 
-  const displayPosts = posts.length > 0 ? posts : dummyPosts;
+  // 【変更点①】 'displayPosts' の代わりに 'filteredPosts' を useMemo を使って定義
+  const filteredPosts = useMemo(() => {
+    // タブが「すべて」の場合は、何もフィルタリングせずに全件返す
+    if (activeTab === "すべて") {
+      return posts;
+    }
+
+    // それ以外のタブの場合は、投稿のタグとタブ名を比較してフィルタリング
+    return posts.filter((post) => {
+      // 投稿のタグ(post.tags)の中に一つでも(some)、
+      // タグ名(tag.tag_name)が現在のアクティブなタブ名(activeTab)と一致するものがあるかチェック
+      return post.tags.some((tag) => tag.tag_name === activeTab);
+    });
+  }, [activeTab, posts]); // activeTab または posts が変更された時だけ、この処理を再実行する
 
   return (
     <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-white">
@@ -219,7 +232,8 @@ export default function TimelinePage() {
                   ref={active ? activeTabRef : null}
                   onClick={() => setActiveTab(tab)}
                   className={`
-                    flex-shrink-0 border-b-2 py-2.5 px-4 text-sm font-semibold transition-colors
+                    flex-shrink-0 border-b-2 py-2.5 text-sm font-semibold transition-colors
+                    w-1/5 min-w-16 flex justify-center
                     ${
                       active
                         ? "border-brand-primary text-brand-primary"
@@ -242,11 +256,17 @@ export default function TimelinePage() {
           </div>
         ) : error ? (
           <div className="p-4 text-center text-red-500">エラー: {error}</div>
-        ) : (
+        ) : // 【変更点②】 フィルタリング結果が0件の場合の表示を追加
+        filteredPosts.length > 0 ? (
           <div className="divide-y divide-gray-100">
-            {displayPosts.map((post) => (
+            {/* 【変更点③】 'displayPosts' の代わりに 'filteredPosts' を使用 */}
+            {filteredPosts.map((post) => (
               <PostCard key={post.post_id} post={post} />
             ))}
+          </div>
+        ) : (
+          <div className="p-4 text-center text-text-secondary">
+            このカテゴリの投稿はまだありません。
           </div>
         )}
       </main>
