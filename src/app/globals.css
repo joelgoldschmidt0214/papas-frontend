@@ -13,6 +13,16 @@
   --color-component-accent: #FA9289;
 }
 
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
 /* iOSオートフィル対策（必要な場合のみ） */
 input:-webkit-autofill,
 input:-webkit-autofill:focus,
