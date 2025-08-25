@@ -141,25 +141,33 @@ export default function Mypage() {
             className="block h-auto w-full"
             priority
           />
+          {/*
+            【★★★★★ 修正点 ★★★★★】
+            各`Bubble`コンポーネントに`href`プロパティを追加し、クリックで指定のページに遷移するようにしました。
+          */}
           <Bubble
+            href="/notifications"
             text="東京ガスからのお知らせです。"
             left="76%"
             top="15%"
             width="180px"
           />
           <Bubble
+            href="/notifications"
             text="メンテナンスのお知らせ♪"
             left="68%"
             top="38%"
             width="160px"
           />
           <Bubble
+            href="/timeline?tab=イベント"
             text="9/6のイベントをチェック！"
             left="32%"
             top="48%"
             width="180px"
           />
           <Bubble
+            href="/timeline?tab=子育て"
             text="保育園情報が更新されました。"
             left="54%"
             top="62%"
