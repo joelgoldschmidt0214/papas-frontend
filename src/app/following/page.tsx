@@ -1,11 +1,9 @@
-// ページコンポーネント内で状態管理(useState)やイベントハンドリング(onClickなど)を行うため、
-// 'use client' ディレクティブをファイルの先頭に記述します。これにより、このコンポーネントはクライアントサイドでレンダリングされます。
 'use client';
 
-// 必要なモジュールやコンポーネントをインポートします。
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Menubar from "@/components/ui/menubar";
 
 /**
  * フォローしているユーザー情報の型定義。
@@ -32,14 +30,14 @@ const dummyFollowingData: FollowedUser[] = [
   {
     id: 2,
     username: 'Username 2',
-    bio: '美味しいものが好きです。',
+    bio: '早く行きたければ一人で進め',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 3,
     username: 'Username 3',
-    bio: null, // 自己紹介がないユーザー
+    bio: '遠くに行きければみんなで進め🔥',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
@@ -53,7 +51,7 @@ const dummyFollowingData: FollowedUser[] = [
   {
     id: 5,
     username: 'Username 5',
-    bio: 'よろしくお願いします。',
+    bio: '毎日深夜2時まで開発してました💻',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
@@ -66,12 +64,10 @@ const FollowingPage = () => {
   const [followingUsers, setFollowingUsers] = useState<FollowedUser[]>([]);
 
   useEffect(() => {
-    // 今回はAPIがないため、代わりにダミーデータをstateにセットします。
     setFollowingUsers(dummyFollowingData);
   }, []);
 
   const handleFollowToggle = (userId: number) => {
-    // フロントエンドの表示を先に切り替える例：
     setFollowingUsers(currentUsers =>
       currentUsers.map(user =>
         user.id === userId
@@ -82,10 +78,10 @@ const FollowingPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white text-text-primary">
+    <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-white text-text-primary">
       {/* ヘッダーエリア */}
-      <header className="flex items-center justify-between p-2 h-12 bg-white border-b sticky top-0 z-10">
-        <Link href="/mypage/profile" className="p-2">
+      <header className="flex-shrink-0 flex items-center justify-between p-2 h-12 bg-white border-b sticky top-0 z-10">
+        <Link href="/mypage" className="p-2">
           <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
         </Link>
         <h1 className="font-bold text-base absolute left-1/2 -translate-x-1/2">
@@ -94,13 +90,11 @@ const FollowingPage = () => {
         <div className="w-8"></div>
       </header>
 
-      {/* メインコンテンツエリア */}
-      <main className="flex-grow overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pb-24">
         {/* ユーザーリスト */}
         <div className="divide-y divide-gray-100">
           {followingUsers.map((user) => (
             <div key={user.id} className="flex items-center px-4 py-3">
-              {/* プロフィール画像 */}
               <div className="w-14 h-14 flex-shrink-0">
                 <Image
                   src={user.profileImageUrl}
@@ -110,8 +104,6 @@ const FollowingPage = () => {
                   className="rounded-full object-cover"
                 />
               </div>
-
-              {/* ユーザー名と自己紹介 */}
               <div className="ml-3 flex-grow min-w-0">
                 <p className="font-bold text-sm truncate">{user.username}</p>
                 {user.bio && (
@@ -120,28 +112,24 @@ const FollowingPage = () => {
                   </p>
                 )}
               </div>
-
-              {/* フォロー/フォロー中ボタン（followersページと同一アイコン・スタイル） */}
               <div className="ml-4 flex-shrink-0">
                 <button
                   onClick={() => handleFollowToggle(user.id)}
                   className={`flex items-center justify-center w-28 h-8 rounded-full border text-xs font-semibold transition-colors
                     ${
                       user.isFollowing
-                        ? 'bg-brand-blue text-white border-brand-blue' // 「フォロー中」青背景＋白文字＋青枠
-                        : 'bg-white text-brand-blue border-brand-blue' // 「フォローする」白背景＋青文字＋青枠
+                        ? 'bg-brand-blue text-white border-brand-blue'
+                        : 'bg-white text-brand-blue border-brand-blue'
                     }
                   `}
                 >
                   {user.isFollowing ? (
                     <>
-                      {/* フォロー中を示すチェックマークアイコン */}
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                       <span>フォロー中</span>
                     </>
                   ) : (
                     <>
-                      {/* フォローするを示す人型アイコン */}
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                       <span>フォローする</span>
                     </>
@@ -152,6 +140,10 @@ const FollowingPage = () => {
           ))}
         </div>
       </main>
+
+      <div className="absolute bottom-0 left-0 right-0 z-30">
+        <Menubar active="mypage" />
+      </div>
     </div>
   );
 };
