@@ -8,7 +8,7 @@ import Menubar from "@/components/ui/menubar";
 /** 画像・アイコンのパス */
 const IMG = {
   bg: "/images/background-img.jpg",
-  banner: "/images/banner_home.jpg",
+  banner: "/images/banner_home.png",
   avatar: "/icons/icon_image_01.svg",
   town: "/icons/town.svg",
   compose: "/icons/btn-compose.svg",
@@ -57,11 +57,11 @@ export default function Mypage() {
   return (
     <div
       className={`
-        relative mx-auto flex min-h-screen w-full max-w-[440px]
-        flex-col bg-white max-h-[930px] overflow-hidden
+        relative mx-auto flex h-screen w-full max-w-[440px]
+        flex-col bg-white overflow-hidden
       `}
     >
-      <div className="flex-1">
+      <main className="flex-1 overflow-y-auto">
         <div className="h-10" aria-hidden />
 
         <header className="relative px-4">
@@ -131,57 +131,65 @@ export default function Mypage() {
           <div className="my-3 h-[0.5px] w-full bg-black/10" />
         </section>
 
-        <main className="w-full">
-          <div className="relative w-full -translate-y-[6px]">
-            <Image
-              src={IMG.bg}
-              alt="まちの背景イラスト"
-              width={1170}
-              height={1800}
-              sizes="(max-width: 440px) 100vw, 440px"
-              className="block h-auto w-full"
-              priority
-            />
-            <Bubble
-              text="東京ガスからのお知らせです。"
-              left="76%"
-              top="15%"
-              width="180px"
-            />
-            <Bubble
-              text="メンテナンスのお知らせ♪"
-              left="68%"
-              top="38%"
-              width="160px"
-            />
-            <Bubble
-              text="9/6のイベントをチェック！"
-              left="32%"
-              top="48%"
-              width="180px"
-            />
-            <Bubble
-              text="保育園情報が更新されました。"
-              left="54%"
-              top="62%"
-              width="180px"
-            />
-          </div>
-        </main>
-      </div>
+        <div className="relative w-full -translate-y-[6px]">
+          <Image
+            src={IMG.bg}
+            alt="まちの背景イラスト"
+            width={1170}
+            height={1800}
+            sizes="(max-width: 440px) 100vw, 440px"
+            className="block h-auto w-full"
+            priority
+          />
+          {/*
+            【★★★★★ 修正点 ★★★★★】
+            各`Bubble`コンポーネントに`href`プロパティを追加し、クリックで指定のページに遷移するようにしました。
+          */}
+          <Bubble
+            href="/notifications"
+            text="東京ガスからのお知らせです。"
+            left="76%"
+            top="15%"
+            width="180px"
+          />
+          <Bubble
+            href="/notifications"
+            text="メンテナンスのお知らせ♪"
+            left="68%"
+            top="38%"
+            width="160px"
+          />
+          <Bubble
+            href="/timeline?tab=イベント"
+            text="9/6のイベントをチェック！"
+            left="32%"
+            top="48%"
+            width="180px"
+          />
+          <Bubble
+            href="/timeline?tab=子育て"
+            text="保育園情報が更新されました。"
+            left="54%"
+            top="62%"
+            width="180px"
+          />
+        </div>
+      </main>
 
       <Link
         href="/compose"
         aria-label="投稿する"
         className={`
-          absolute bottom-[100px] right-4 z-50 inline-flex size-14
+          absolute bottom-24 right-5 z-20 inline-flex size-14
           items-center justify-center rounded-full bg-brand-blue shadow-md
         `}
       >
         <Image src={IMG.compose} alt="" width={56} height={56} />
       </Link>
 
-      <Menubar active="home" />
+      <div className="absolute bottom-0 left-0 right-0 z-30">
+        <Menubar active="home" />
+      </div>
     </div>
   );
 }
