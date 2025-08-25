@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Menubar from "@/components/ui/menubar";
+import MenubarWithCompose from "@/components/ui/MenubarWithCompose";
 
 /** 画像・アイコンのパス */
 const IMG = {
@@ -57,14 +57,14 @@ export default function Mypage() {
   return (
     <div
       className={`
-        relative mx-auto flex h-screen w-full max-w-[440px]
-        flex-col bg-white overflow-hidden
+        mx-auto flex h-screen w-full max-w-[440px]
+        flex-col bg-white
       `}
     >
-      <main className="flex-1 overflow-y-auto">
+      {/* --- ヘッダー（固定） --- */}
+      <header className="flex-shrink-0">
         <div className="h-10" aria-hidden />
-
-        <header className="relative px-4">
+        <div className="relative px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link href="/mypage" aria-label="マイページへ移動">
@@ -107,10 +107,12 @@ export default function Mypage() {
               </Link>
             </div>
           </div>
-        </header>
-
+        </div>
         <div className="my-3 h-[0.5px] w-full bg-black/10" />
+      </header>
 
+      {/* --- メインコンテンツ（スクロール可能） --- */}
+      <main className="flex-1 overflow-y-auto">
         <section className="w-full">
           <a
             href="https://members.tokyo-gas.co.jp/contents/public/news/list.html"
@@ -141,10 +143,6 @@ export default function Mypage() {
             className="block h-auto w-full"
             priority
           />
-          {/*
-            【★★★★★ 修正点 ★★★★★】
-            各`Bubble`コンポーネントに`href`プロパティを追加し、クリックで指定のページに遷移するようにしました。
-          */}
           <Bubble
             href="/notifications"
             text="東京ガスからのお知らせです。"
@@ -176,20 +174,10 @@ export default function Mypage() {
         </div>
       </main>
 
-      <Link
-        href="/compose"
-        aria-label="投稿する"
-        className={`
-          absolute bottom-24 right-5 z-20 inline-flex size-14
-          items-center justify-center rounded-full bg-brand-blue shadow-md
-        `}
-      >
-        <Image src={IMG.compose} alt="" width={56} height={56} />
-      </Link>
-
-      <div className="absolute bottom-0 left-0 right-0 z-30">
-        <Menubar active="home" />
-      </div>
+      {/* --- フッター（固定） --- */}
+      <footer className="flex-shrink-0">
+        <MenubarWithCompose active="home" />
+      </footer>
     </div>
   );
 }
