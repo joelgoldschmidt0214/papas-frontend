@@ -55,7 +55,7 @@ const dummyPosts: Post[] = [
       user_id: 1,
       username: "username-1",
       display_name: "グルメな豊洲民",
-      profile_image_url: "/images/default-avatar.png",
+      profile_image_url: "/icons/icon_image_01.svg",
     },
     images: [],
     tags: [
@@ -71,16 +71,16 @@ const dummyPosts: Post[] = [
   {
     post_id: 2,
     content:
-      "豊洲のららぽーとに行ってきたよ！雨の日でも楽しめるから子連れに最高✨ 広々としたキッズスペースで、子どもたちは大はしゃぎ！おむつ替えスペースや授乳室も完備されてて、ママパパにも優しい設計でした😊",
+      "豊洲のららぽーとに行ってきたよ！雨の日でも楽しめるから子連れに最高✨",
     created_at: "2024-05-19T18:30:00Z",
     updated_at: "2024-05-19T18:30:00Z",
     author: {
       user_id: 2,
       username: "username-2",
       display_name: "豊洲ママ",
-      profile_image_url: "/images/default-avatar.png",
+      profile_image_url: "/icons/icon_image_01.svg",
     },
-    images: [{ image_url: "/images/kids-space.jpg", display_order: 1 }],
+    images: [{ image_url: "/images/facility_image.png", display_order: 1 }],
     tags: [
       { tag_id: 3, tag_name: "おすすめ施設", posts_count: 88 },
       { tag_id: 4, tag_name: "子育て", posts_count: 123 },
@@ -99,6 +99,7 @@ type PostContextType = {
   isLoading: boolean;
   error: string | null;
   fetchPosts: () => Promise<void>;
+  addPost: (newPost: Post) => void;
 };
 
 const PostContext = createContext<PostContextType | undefined>(undefined);
@@ -147,7 +148,11 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [posts.length, isLoading]);
 
-  const value = { posts, isLoading, error, fetchPosts };
+  const addPost = useCallback((newPost: Post) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  }, []);
+
+  const value = { posts, isLoading, error, fetchPosts, addPost };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };
