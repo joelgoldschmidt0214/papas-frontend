@@ -87,7 +87,7 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
               {survey.targetAudience}
             </span>
             {survey.isAnswered && (
-              <div className="text-green-500">
+              <div className="text-brand-blue">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -127,14 +127,20 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
       </div>
       <div className="mt-4 flex items-center justify-between">
         <p className="text-xs text-gray-500">締め切り {survey.deadline}まで</p>
-        <span
-          className={`
-            rounded-full border border-component-accent bg-white
-            px-2 py-0.5 text-xs font-bold text-component-accent
-          `}
-        >
-          パッチョポイント : {survey.points}pt
-        </span>
+        {survey.isAnswered ? (
+          <span className="rounded-full border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-500">
+            パッチョポイント獲得済み
+          </span>
+        ) : (
+          <span
+            className={`
+              rounded-full border border-component-accent bg-white
+              px-2 py-0.5 text-xs font-bold text-component-accent
+            `}
+          >
+            パッチョポイント : {survey.points}pt
+          </span>
+        )}
       </div>
     </div>
   );
