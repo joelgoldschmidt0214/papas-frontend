@@ -71,6 +71,8 @@ export default function SurveyResultsPage() {
         const allAnswers = JSON.parse(allAnswersJSON);
         // 現在のIDに該当する回答をセット
         setUserAnswer(allAnswers[surveyId] || null);
+        // データを読み込んだら、すぐにsessionStorageから削除する
+        sessionStorage.removeItem("surveyAnswers");
       }
     }
   }, [pathname]); // pathnameが変わった時に再実行
