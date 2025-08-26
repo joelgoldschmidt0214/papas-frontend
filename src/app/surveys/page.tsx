@@ -151,25 +151,23 @@ export default function SurveysPage() {
     // 1. sessionStorageから回答済みの全回答データを取得します
     let answeredSurveyIds: number[] = [];
     try {
-      const allAnswersJSON = sessionStorage.getItem("surveyAnswers");
-      if (allAnswersJSON) {
-        const allAnswers = JSON.parse(allAnswersJSON);
-        // 回答オブジェクトのキー（例: "1", "3"）を数値の配列（例: [1, 3]）に変換します
-        answeredSurveyIds = Object.keys(allAnswers).map(Number);
+      // (キー名は'answeredSurveyIds'に統一するのが分かりやすいです)
+      const answeredIdsJSON = sessionStorage.getItem("answeredSurveyIds");
+      if (answeredIdsJSON) {
+        answeredSurveyIds = JSON.parse(answeredIdsJSON);
       }
     } catch (e) {
-      console.error("Failed to load survey answers from sessionStorage:", e);
+      console.error(
+        "Failed to load answered survey IDs from sessionStorage:",
+        e
+      );
     }
 
     // 2. dummySurveys の isAnswered フラグを、sessionStorage の情報で上書きします
-    const updatedSurveys = dummySurveys.map((survey) => {
-      // もし、この survey.id が回答済みのIDリストに含まれていたら、isAnswered を true にします
-      if (answeredSurveyIds.includes(survey.id)) {
-        return { ...survey, isAnswered: true };
-      }
-      // 含まれていなければ、元の survey のまま返します
-      return survey;
-    });
+    const updatedSurveys = dummySurveys.map((survey) => ({
+      ...survey,
+      isAnswered: answeredSurveyIds.includes(survey.id),
+    }));
 
     // 3. 状態が更新されたアンケートリストを state にセットします
     setSurveys(updatedSurveys);
@@ -246,10 +244,16 @@ export default function SurveysPage() {
         {filteredSurveys.length > 0 ? (
           filteredSurveys.map((survey) =>
             survey.isAnswered ? (
-              <div key={survey.id} className="cursor-not-allowed">
+              // 回答済みの場合は結果ページへリンク
+              <Link
+                key={survey.id}
+                href={`/surveys/${survey.id}/results`}
+                className="block"
+              >
                 <SurveyCardContent survey={survey} />
-              </div>
+              </Link>
             ) : (
+              // 未回答の場合は回答ページへリンク
               <Link
                 key={survey.id}
                 href={`/surveys/${survey.id}`}

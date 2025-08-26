@@ -1,16 +1,15 @@
 // src/app/surveys/[id]/results/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import Menubar from "@/components/ui/menubar";
 import {
   getSurveyStatistics,
   getSurveyComments,
   type SurveyStatistics,
-  type SurveyCommentsResponse,
+  type SurveyComment,
 } from "@/lib/api/surveys";
 
 // --- 型定義 ---
@@ -25,57 +24,50 @@ type UserAnswer = {
 export default function SurveyResultsPage() {
   const [userAnswer, setUserAnswer] = useState<UserAnswer | null>(null);
   const [surveyStats, setSurveyStats] = useState<SurveyStatistics | null>(null);
-  const [surveyComments, setSurveyComments] =
-    useState<SurveyCommentsResponse | null>(null);
+  // ★★★ 変更点①: 型を SurveyComment[] に変更 ★★★
+  const [surveyComments, setSurveyComments] = useState<SurveyComment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
   const surveyId = Number(params?.id);
-  const pathname = usePathname();
 
+  // ★★★ 変更点②: sessionStorageのキー名を 'tempUserAnswer' に統一 ★★★
   useEffect(() => {
-    // URLから現在のアンケートIDを取得 (例: '/surveys/1/results' -> '1')
-    const pathSegments = pathname.split("/");
-    const surveyId = pathSegments[pathSegments.length - 2];
-
-    if (surveyId) {
-      const allAnswersJSON = sessionStorage.getItem("surveyAnswers");
-      if (allAnswersJSON) {
-        const allAnswers = JSON.parse(allAnswersJSON);
-        // 現在のIDに該当する回答をセット
-        setUserAnswer(allAnswers[surveyId] || null);
-        // データを読み込んだら、すぐにsessionStorageから削除する
-        sessionStorage.removeItem("surveyAnswers");
-      }
+    const tempAnswerJSON = sessionStorage.getItem("tempUserAnswer");
+    if (tempAnswerJSON) {
+      setUserAnswer(JSON.parse(tempAnswerJSON));
+      // 読み込んだらすぐに削除
+      sessionStorage.removeItem("tempUserAnswer");
     }
-  }, [pathname]); // pathnameが変わった時に再実行
+  }, []); // この処理はマウント時に一度だけ実行
 
-  useEffect(() => {
-    if (surveyId) {
-      fetchSurveyData();
-    }
-  }, [surveyId]);
+  // ★★★ fetchSurveyDataをuseCallbackでラップするか、useEffect内に移動する ★★★
+  // ここでは useCallback を使うパターンを示します
+  const fetchSurveyData = useCallback(async () => {
+    if (!surveyId) return; // surveyIdがない場合は何もしない
 
-  const fetchSurveyData = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // 集計データとコメントデータを並行取得
-      const [stats, comments] = await Promise.all([
+      const [stats, commentsResponse] = await Promise.all([
         getSurveyStatistics(surveyId),
         getSurveyComments(surveyId),
       ]);
 
       setSurveyStats(stats);
-      setSurveyComments(comments);
+      setSurveyComments(commentsResponse.comments);
     } catch (err) {
       console.error("Failed to fetch survey data:", err);
       setError("データの取得に失敗しました");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [surveyId]); // surveyIdに依存することを明記
+
+  useEffect(() => {
+    fetchSurveyData();
+  }, [fetchSurveyData]); // 依存配列にfetchSurveyDataを追加
 
   // 割合の計算
   const agreePercentage =
@@ -200,7 +192,8 @@ export default function SurveyResultsPage() {
             </div>
           )}
 
-          {surveyComments?.comments.map((comment) => (
+          {/* ★★★ 変更点④: surveyComments.comments を surveyComments に変更 ★★★ */}
+          {surveyComments.map((comment) => (
             <div
               key={comment.response_id}
               className="rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700"
@@ -233,13 +226,15 @@ export default function SurveyResultsPage() {
                 })}
               </div>
             </div>
-          )) || []}
+          ))}
 
-          {surveyComments?.comments.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <p>まだコメントがありません</p>
-            </div>
-          )}
+          {!isLoading &&
+            surveyComments.length === 0 &&
+            !userAnswer?.comment && (
+              <div className="text-center py-8 text-gray-500">
+                <p>まだコメントがありません</p>
+              </div>
+            )}
         </div>
       </main>
 
