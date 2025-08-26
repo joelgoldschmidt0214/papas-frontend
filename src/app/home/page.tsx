@@ -89,7 +89,7 @@ export default function Mypage() {
                   <Image src={IMG.town} alt="" width={16} height={16} className="h-4 w-4" />
                   <span>東京都江東区</span>
                 </div>
-                <p className="mt-1 text-[14px] font-bold text-text-primary">username</p>
+                <p className="mt-1 text-[14px] font-bold text-text-primary">デモユーザー</p>
               </div>
             </div>
 
