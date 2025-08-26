@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import EngageButton from "@/components/ui/EngageButton";
 import MenubarWithCompose from "@/components/ui/MenubarWithCompose";
@@ -22,56 +22,6 @@ const ICON = {
     active: "/icons/engage_bookmark=click.svg",
   },
 };
-
-/* ============ ダミーデータ ============ */
-// const dummyPosts: Post[] = [
-//   {
-//     post_id: 1,
-//     content:
-//       "豊洲の近くにできた焼肉屋さん美味しかった！今なら500円クーポンがあるらしい。",
-//     created_at: "2024-05-20T12:00:00Z",
-//     updated_at: "2024-05-20T12:00:00Z",
-//     author: {
-//       user_id: 1,
-//       username: "username-1",
-//       display_name: "グルメな豊洲民",
-//       profile_image_url: "/icons/icon_image_01.svg",
-//     },
-//     images: [],
-//     tags: [
-//       { tag_id: 1, tag_name: "お得情報", posts_count: 101 },
-//       { tag_id: 2, tag_name: "グルメ", posts_count: 250 },
-//     ],
-//     likes_count: 12,
-//     comments_count: 1,
-//     bookmarks_count: 3,
-//     is_liked: false,
-//     is_bookmarked: true,
-//   },
-//   {
-//     post_id: 2,
-//     content:
-//       "豊洲のららぽーとに行ってきたよ！雨の日でも楽しめるから子連れに最高✨",
-//     created_at: "2024-05-19T18:30:00Z",
-//     updated_at: "2024-05-19T18:30:00Z",
-//     author: {
-//       user_id: 2,
-//       username: "username-2",
-//       display_name: "豊洲ママ",
-//       profile_image_url: "/icons/icon_image_01.svg",
-//     },
-//     images: [{ image_url: "/images/facility_image.png", display_order: 1 }],
-//     tags: [
-//       { tag_id: 3, tag_name: "おすすめ施設", posts_count: 88 },
-//       { tag_id: 4, tag_name: "子育て", posts_count: 123 },
-//     ],
-//     likes_count: 32,
-//     comments_count: 4,
-//     bookmarks_count: 16,
-//     is_liked: true,
-//     is_bookmarked: false,
-//   },
-// ];
 
 /* ============ 投稿カード ============ */
 function PostCard({ post }: { post: Post }) {
@@ -165,13 +115,17 @@ function TimelineContent() {
   type Tab = (typeof tabs)[number];
 
   const searchParams = useSearchParams();
+  const router = useRouter(); // ★★★ routerインスタンスを取得 ★★★
+
+  // ★★★ usePostsからaddPostを取得 ★★★
+  const { posts, isLoading, error, fetchPosts, addPost } = usePosts();
   const tabFromUrl = searchParams.get("tab") as Tab | null;
+  const fromCompose = searchParams.get("fromCompose") === "true";
 
   const [activeTab, setActiveTab] = useState<Tab>(
     tabFromUrl && tabs.includes(tabFromUrl) ? tabFromUrl : "すべて"
   );
 
-  const { posts, isLoading, error, fetchPosts } = usePosts();
   const navRef = useRef<HTMLElement>(null);
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
@@ -180,6 +134,23 @@ function TimelineContent() {
       fetchPosts();
     }
   }, [posts, isLoading, fetchPosts]);
+
+  useEffect(() => {
+    if (fromCompose) {
+      const newPostData = sessionStorage.getItem("newPost");
+      if (newPostData) {
+        try {
+          const newPost = JSON.parse(newPostData);
+          addPost(newPost);
+          sessionStorage.removeItem("newPost");
+        } catch (e) {
+          console.error("Failed to process new post:", e);
+          sessionStorage.removeItem("newPost");
+        }
+      }
+      router.replace("/timeline", { scroll: false });
+    }
+  }, [fromCompose, addPost, router]);
 
   useEffect(() => {
     if (navRef.current && activeTabRef.current) {
