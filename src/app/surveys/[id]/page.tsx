@@ -9,21 +9,25 @@ import Menubar from "@/components/ui/menubar";
 import { submitSurveyResponse } from "@/lib/api/surveys";
 
 // --- 型定義 ---
-type SurveyDetails = {
-  id: number;
-  targetAudience: "myTOKYOGAS会員限定" | "一般";
-  title: string;
-  question: string;
-};
+type SurveyDetails = [
+  {
+    id: number;
+    targetAudience: "myTOKYOGAS会員限定" | "一般";
+    title: string;
+    question: string;
+  }
+];
 
 // --- ダミーデータ ---
-const dummySurveyData: SurveyDetails = {
-  id: 1,
-  targetAudience: "myTOKYOGAS会員限定",
-  title: "TOMOSUアプリの体験について",
-  question:
-    "TOMOSUのようなアプリがあれば、あなたのまちはもっと豊かになると思いますか？",
-};
+const dummySurveys: SurveyDetails = [
+  {
+    id: 1,
+    targetAudience: "myTOKYOGAS会員限定",
+    title: "TOMOSUアプリの体験について",
+    question:
+      "TOMOSUのようなアプリがあれば、あなたのまちはもっと豊かになると思いますか？",
+  },
+];
 
 // --- メインページコンポーネント ---
 export default function SurveyResponsePage({
@@ -40,22 +44,43 @@ export default function SurveyResponsePage({
   const router = useRouter();
 
   const { id } = use(params);
+  const surveyId = Number(id);
 
+  // ★★★ 変更点①: 表示するアンケートデータをdummySurveysから検索 ★★★
+  const surveyData = dummySurveys.find((s) => s.id === surveyId);
+
+  // ★★★ 変更点②: handleSubmit関数を全面的に修正 ★★★
   const handleSubmit = async () => {
     if (!selectedChoice) {
       alert("賛成か反対かを選択してください。");
       return;
     }
 
+    setIsSubmitting(true);
+    setError(null);
     try {
-      setIsSubmitting(true);
-      setError(null);
+      // 1. APIに回答を送信 (DBへの永続化)
+      await submitSurveyResponse(surveyId, selectedChoice, comment);
 
-      // APIに回答を送信
-      await submitSurveyResponse(Number(id), selectedChoice, comment);
+      // 2. resultsページに渡すための一時的な回答内容を保存
+      const answerData = { choice: selectedChoice, comment };
+      sessionStorage.setItem("tempUserAnswer", JSON.stringify(answerData));
 
-      // 結果ページに遷移（成功時は直接遷移）
-      router.push(`/surveys/${id}/results`);
+      // 3. surveysページで使うための「回答済みID」を保存
+      const answeredIdsJSON = sessionStorage.getItem("answeredSurveyIds");
+      const answeredSurveyIds = answeredIdsJSON
+        ? JSON.parse(answeredIdsJSON)
+        : [];
+      if (!answeredSurveyIds.includes(surveyId)) {
+        answeredSurveyIds.push(surveyId);
+        sessionStorage.setItem(
+          "answeredSurveyIds",
+          JSON.stringify(answeredSurveyIds)
+        );
+      }
+
+      // 4. 結果ページへ遷移
+      router.push(`/surveys/${surveyId}/results`);
     } catch (error) {
       console.error("Survey submission error:", error);
       setError("回答の送信に失敗しました。もう一度お試しください。");
@@ -63,6 +88,14 @@ export default function SurveyResponsePage({
       setIsSubmitting(false);
     }
   };
+
+  if (!surveyData) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>アンケートが見つかりません。</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-white">
@@ -84,41 +117,38 @@ export default function SurveyResponsePage({
       </header>
 
       <main className="flex-1 overflow-y-auto p-4 bg-background-primary">
+        {/* ★★★ 変更点③: dummySurveyDataをsurveyDataに置き換え ★★★ */}
         <div className="space-y-4 rounded-lg bg-white p-4 border border-gray-200">
           <span className="rounded-full bg-brand-secondary px-2.5 py-1 text-xs font-bold text-brand-blue">
-            {dummySurveyData.targetAudience}
+            {surveyData.targetAudience}
           </span>
           <h2 className="text-lg font-bold text-text-primary">
-            {dummySurveyData.title}
+            {surveyData.title}
           </h2>
           <div className="rounded-lg border border-gray-200 p-3">
             <p className="text-sm text-gray-700 leading-relaxed">
-              {dummySurveyData.question}
+              {surveyData.question} {/* questionからdescriptionに変更 */}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-2">
             <button
               onClick={() => setSelectedChoice("agree")}
-              className={`py-3 text-sm font-bold rounded-lg border-2 transition-colors
-                ${
-                  selectedChoice === "agree"
-                    ? "bg-component-accent text-white border-component-accent"
-                    : "bg-white text-component-accent border-component-accent"
-                }
-              `}
+              className={`py-3 text-sm font-bold rounded-lg border-2 transition-colors ${
+                selectedChoice === "agree"
+                  ? "bg-component-accent text-white border-component-accent"
+                  : "bg-white text-component-accent border-component-accent"
+              }`}
             >
               賛成する
             </button>
             <button
               onClick={() => setSelectedChoice("disagree")}
-              className={`py-3 text-sm font-bold rounded-lg border-2 transition-colors
-                ${
-                  selectedChoice === "disagree"
-                    ? "bg-brand-blue text-white border-brand-blue"
-                    : "bg-white text-brand-blue border-brand-blue"
-                }
-              `}
+              className={`py-3 text-sm font-bold rounded-lg border-2 transition-colors ${
+                selectedChoice === "disagree"
+                  ? "bg-brand-blue text-white border-brand-blue"
+                  : "bg-white text-brand-blue border-brand-blue"
+              }`}
             >
               反対する
             </button>

@@ -148,8 +148,30 @@ export default function SurveysPage() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
 
   useEffect(() => {
-    setSurveys(dummySurveys);
-  }, []);
+    // 1. sessionStorageから回答済みの全回答データを取得します
+    let answeredSurveyIds: number[] = [];
+    try {
+      // (キー名は'answeredSurveyIds'に統一するのが分かりやすいです)
+      const answeredIdsJSON = sessionStorage.getItem("answeredSurveyIds");
+      if (answeredIdsJSON) {
+        answeredSurveyIds = JSON.parse(answeredIdsJSON);
+      }
+    } catch (e) {
+      console.error(
+        "Failed to load answered survey IDs from sessionStorage:",
+        e
+      );
+    }
+
+    // 2. dummySurveys の isAnswered フラグを、sessionStorage の情報で上書きします
+    const updatedSurveys = dummySurveys.map((survey) => ({
+      ...survey,
+      isAnswered: answeredSurveyIds.includes(survey.id),
+    }));
+
+    // 3. 状態が更新されたアンケートリストを state にセットします
+    setSurveys(updatedSurveys);
+  }, []); // この処理はページが最初に読み込まれた時に一度だけ実行されます
 
   const filteredSurveys = useMemo(() => {
     switch (activeTab) {
@@ -222,10 +244,16 @@ export default function SurveysPage() {
         {filteredSurveys.length > 0 ? (
           filteredSurveys.map((survey) =>
             survey.isAnswered ? (
-              <div key={survey.id} className="cursor-not-allowed">
+              // 回答済みの場合は結果ページへリンク
+              <Link
+                key={survey.id}
+                href={`/surveys/${survey.id}/results`}
+                className="block"
+              >
                 <SurveyCardContent survey={survey} />
-              </div>
+              </Link>
             ) : (
+              // 未回答の場合は回答ページへリンク
               <Link
                 key={survey.id}
                 href={`/surveys/${survey.id}`}
