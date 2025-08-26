@@ -72,7 +72,7 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
       className={`
         group relative rounded-lg border border-gray-200 bg-white p-4 shadow-sm
         transition-all duration-200 group-hover:shadow-md
-        ${survey.isAnswered ? "opacity-70" : ""}
+        ${survey.isAnswered ? "opacity-50" : ""}
       `}
     >
       <div className="flex items-start justify-between">
