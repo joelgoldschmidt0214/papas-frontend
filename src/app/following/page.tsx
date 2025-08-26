@@ -22,36 +22,36 @@ type FollowedUser = {
 const dummyFollowingData: FollowedUser[] = [
   {
     id: 1,
-    username: 'Username 1',
+    username: '江東区のパッチョくん',
     bio: '自己紹介文が入ります。よろしくお願いします。',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 2,
-    username: 'Username 2',
+    username: '砂町銀座のりじちょー',
     bio: '早く行きたければ一人で進め',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 3,
-    username: 'Username 3',
+    username: '豊洲市場のりじちょー',
     bio: '遠くに行きければみんなで進め🔥',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 4,
-    username: 'Username 4',
+    username: 'ベイサイド主婦',
     bio: '地域のイベント情報を発信しています！',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
   {
     id: 5,
-    username: 'Username 5',
-    bio: '毎日深夜2時まで開発してました💻',
+    username: '有明のつむぎママ',
+    bio: '夫が育児よりもTech0を優先してます💻',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
@@ -80,7 +80,7 @@ const FollowingPage = () => {
   return (
     <div className="relative mx-auto flex h-screen w-full max-w-[440px] flex-col bg-white text-text-primary">
       {/* ヘッダーエリア */}
-      <header className="flex-shrink-0 flex items-center justify-between p-2 h-12 bg-white border-b sticky top-0 z-10">
+      <header className="flex-shrink-0 flex items-center justify-between p-2 h-12 bg-white border-b border-text-secondary sticky top-0 z-10">
         <Link href="/mypage" className="p-2">
           <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
         </Link>
