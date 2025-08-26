@@ -258,27 +258,29 @@ export default function SurveysPage() {
 
       <main className="flex-1 space-y-4 overflow-y-auto p-4">
         {filteredSurveys.length > 0 ? (
-          filteredSurveys.map((survey) =>
-            survey.isAnswered ? (
-              // 回答済みの場合は結果ページへリンク
-              <Link
-                key={survey.id}
-                href={`/surveys/${survey.id}/results`}
-                className="block"
-              >
-                <SurveyCardContent survey={survey} />
-              </Link>
-            ) : (
-              // 未回答の場合は回答ページへリンク
-              <Link
-                key={survey.id}
-                href={`/surveys/${survey.id}`}
-                className="block"
-              >
-                <SurveyCardContent survey={survey} />
-              </Link>
-            )
-          )
+          filteredSurveys.map((survey) => {
+            // MVPの仕様: survey.idが1の場合のみクリック可能
+            const isClickable = survey.id === 1;
+
+            if (isClickable) {
+              // --- クリック可能なカード (id: 1) ---
+              const href = survey.isAnswered
+                ? `/surveys/${survey.id}/results`
+                : `/surveys/${survey.id}`;
+              return (
+                <Link key={survey.id} href={href} className="block">
+                  <SurveyCardContent survey={survey} />
+                </Link>
+              );
+            } else {
+              // --- クリック不可能なカード (id > 1) ---
+              return (
+                <div key={survey.id}>
+                  <SurveyCardContent survey={survey} />
+                </div>
+              );
+            }
+          })
         ) : (
           <div className="pt-10 text-center text-gray-500">
             <p>表示するアンケートはありません。</p>
