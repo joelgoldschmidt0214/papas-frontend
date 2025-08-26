@@ -1,78 +1,77 @@
 'use client';
 
-// 必要なモジュールやコンポーネントをインポートします。
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Menubar from "@/components/ui/menubar";
 
 /**
- * フォロワーのユーザー情報の型定義。
+ * ご近所さんのユーザー情報の型定義。
  */
-type FollowerUser = {
+type NeighborhoodUser = {
   id: number;
   username: string;
   bio: string | null;
   profileImageUrl: string;
-  isFollowing: boolean;
+  isNeighborhood: boolean;
 };
 
 /**
  * APIからデータを取得するまでの間、画面に表示するためのダミーデータ。
  */
-const dummyFollowersData: FollowerUser[] = [
+const dummyNeighborhoodData: NeighborhoodUser[] = [
   {
     id: 1,
-    username: 'Tech0のみんな',
-    bio: '開発お疲れ様でした🎉\nSTEP4も頑張ろう！\nよろしくお願いします！',
+    username: 'みなとママ',
+    bio: '豊洲ぐるり公園で朝ランしてます。門仲のパン屋情報ください！',
     profileImageUrl: '/icons/icon_image_01.svg',
-    isFollowing: false,
+    isNeighborhood: true,
   },
   {
     id: 2,
-    username: 'けいじゅ',
-    bio: '今日はTech0の発表🔥\n緊張するけど頑張ろう！\nみんなの応援よろしく！',
-    profileImageUrl: '/images/user_01.png',
-    isFollowing: true,
+    username: 'かふぇ好きあや',
+    bio: '門前仲町のカフェ巡りが趣味。清澄白河まで自転車でふらっと行きます。',
+    profileImageUrl: '/icons/icon_image_01.svg',
+    isNeighborhood: false,
   },
   {
     id: 3,
-    username: 'はせちゅー',
-    bio: 'オリジナルTシャツ👕\nデザインが素敵！',
-    profileImageUrl: '/images/user_02.png',
-    isFollowing: true,
+    username: 'とうそうノート',
+    bio: '有明勤務のエンジニア。豊洲市場の海鮮ランチレポ多めです。',
+    profileImageUrl: '/icons/icon_image_01.svg',
+    isNeighborhood: false,
   },
   {
     id: 4,
-    username: 'けんちゃん',
-    bio: '子育て奮闘中👶\n日々の成長記録を投稿しています\n同じパパ・ママさん仲良くしてください！',
-    profileImageUrl: '/images/user_03.png',
-    isFollowing: false,
+    username: 'いぬとさんぽ日和',
+    bio: '木場公園でワンコと散歩。週末はBBQと植物園に出没します。',
+    profileImageUrl: '/icons/icon_image_01.svg',
+    isNeighborhood: true,
   },
   {
     id: 5,
-    username: 'えとー',
-    bio: '画像生成AIでアート制作中🎨\n新しい表現方法を模索しています',
-    profileImageUrl: '/images/user_04.png',
-    isFollowing: false,
+    username: 'すなまち食いしん坊',
+    bio: '砂町銀座の食べ歩き担当。揚げ物とコロッケの新店情報募集中！',
+    profileImageUrl: '/icons/icon_image_01.svg',
+    isNeighborhood: true,
   },
 ];
 
 /**
- * フォロワー一覧ページのメインコンポーネント
+ * メインコンポーネント
  */
-const FollowersPage = () => {
-  const [followers, setFollowers] = useState<FollowerUser[]>([]);
+const NeighborhoodPage = () => {
+  const [NeighborhoodUsers, setNeighborhoodUsers] = useState<NeighborhoodUser[]>([]);
 
   useEffect(() => {
-    setFollowers(dummyFollowersData);
+    setNeighborhoodUsers(dummyNeighborhoodData);
   }, []);
 
-  const handleFollowToggle = (userId: number) => {
-    setFollowers(currentUsers =>
+  const handleNeighborhoodToggle = (userId: number) => {
+    setNeighborhoodUsers(currentUsers =>
       currentUsers.map(user =>
         user.id === userId
-          ? { ...user, isFollowing: !user.isFollowing }
+          ? { ...user, isNeighborhood: !user.isNeighborhood }
           : user
       )
     );
@@ -86,7 +85,7 @@ const FollowersPage = () => {
           <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
         </Link>
         <h1 className="font-bold text-base absolute left-1/2 -translate-x-1/2">
-          フォロワー
+          やりとりしたご近所さん
         </h1>
         <div className="w-8"></div>
       </header>
@@ -94,7 +93,7 @@ const FollowersPage = () => {
       <main className="flex-1 overflow-y-auto pb-24">
         {/* ユーザーリスト */}
         <div className="divide-y divide-gray-100">
-          {followers.map((user) => (
+          {NeighborhoodUsers.map((user) => (
             <div key={user.id} className="flex items-center px-4 py-3">
               <div className="w-14 h-14 flex-shrink-0">
                 <Image
@@ -105,7 +104,6 @@ const FollowersPage = () => {
                   className="rounded-full object-cover"
                 />
               </div>
-
               <div className="ml-3 flex-grow min-w-0">
                 <p className="font-bold text-sm truncate">{user.username}</p>
                 {user.bio && (
@@ -116,16 +114,16 @@ const FollowersPage = () => {
               </div>
               <div className="ml-4 flex-shrink-0">
                 <button
-                  onClick={() => handleFollowToggle(user.id)}
+                  onClick={() => handleNeighborhoodToggle(user.id)}
                   className={`flex items-center justify-center w-28 h-8 rounded-full border text-xs font-semibold transition-colors
                     ${
-                      user.isFollowing
+                      user.isNeighborhood
                         ? 'bg-brand-blue text-white border-brand-blue'
                         : 'bg-white text-brand-blue border-brand-blue'
                     }
                   `}
                 >
-                  {user.isFollowing ? (
+                  {user.isNeighborhood ? (
                     <>
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                       <span>フォロー中</span>
@@ -150,4 +148,4 @@ const FollowersPage = () => {
   );
 };
 
-export default FollowersPage;
+export default NeighborhoodPage;
