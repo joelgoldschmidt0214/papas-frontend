@@ -57,12 +57,12 @@ export default function ProfilePage() {
                 priority
               />
               <div className="min-w-0">
-                <p className="truncate text-[14px] font-bold text-text-primary">username</p>
+                <p className="truncate text-[14px] font-bold text-text-primary">デモユーザー</p>
                 <p className="mt-1 text-[12px] leading-4 text-text-primary">
                   フォロー{" "}
-                  <Link href="/following" className="font-bold text-brand-blue">10</Link>{" "}
+                  <Link href="/following" className="font-bold text-brand-blue underline underline-offset-2 decoration-brand-blue">10</Link>{" "}
                   フォロワー{" "}
-                  <Link href="/followers" className="font-bold text-brand-blue">20</Link>
+                  <Link href="/followers" className="font-bold text-brand-blue underline underline-offset-2 decoration-brand-blue">20</Link>
                 </p>
               </div>
             </div>
