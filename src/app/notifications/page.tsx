@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import Menubar from "@/components/ui/menubar";
+import Menubar from '@/components/ui/menubar';
 
 type NotificationType = 'like' | 'comment' | 'new_survey' | 'survey_response' | 'maintenance_notice';
 
