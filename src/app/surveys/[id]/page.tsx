@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Menubar from "@/components/ui/menubar";
+import { submitSurveyResponse } from "@/lib/api/surveys";
 
 // --- 型定義 ---
 type SurveyDetails = {
@@ -27,23 +28,34 @@ const dummySurveyData: SurveyDetails = {
 export default function SurveyResponsePage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedChoice, setSelectedChoice] = useState<'agree' | 'disagree' | null>(null);
   const [comment, setComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   
   const { id } = use(params);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedChoice) {
       alert("賛成か反対かを選択してください。");
       return;
     }
     
-    const answerData = {
-      choice: selectedChoice,
-      comment: comment,
-    };
-    sessionStorage.setItem('surveyAnswer', JSON.stringify(answerData));
-
-    router.push(`/surveys/${id}/results`);
+    try {
+      setIsSubmitting(true);
+      setError(null);
+      
+      // APIに回答を送信
+      await submitSurveyResponse(Number(id), selectedChoice, comment);
+      
+      // 結果ページに遷移（成功時は直接遷移）
+      router.push(`/surveys/${id}/results`);
+      
+    } catch (error) {
+      console.error('Survey submission error:', error);
+      setError('回答の送信に失敗しました。もう一度お試しください。');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -105,13 +117,19 @@ export default function SurveyResponsePage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
+            <p className="text-red-700 text-sm">{error}</p>
+          </div>
+        )}
+
         <div className="mt-6">
           <button
             onClick={handleSubmit}
             className="w-full rounded-full bg-brand-blue py-3.5 text-base font-bold text-white shadow-lg transition-opacity hover:opacity-90 disabled:opacity-50"
-            disabled={!selectedChoice}
+            disabled={!selectedChoice || isSubmitting}
           >
-            声を届ける
+            {isSubmitting ? '送信中...' : '声を届ける'}
           </button>
         </div>
       </main>
