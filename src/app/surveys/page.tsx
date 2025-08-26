@@ -148,13 +148,17 @@ export default function SurveysPage() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
 
   useEffect(() => {
-    // 1. sessionStorageから回答済みの全回答データを取得します
-    let answeredSurveyIds: number[] = [];
+    // 1. dummySurveysで元々回答済みのIDリストを取得
+    const initialAnsweredIds = dummySurveys
+      .filter((survey) => survey.isAnswered)
+      .map((survey) => survey.id);
+
+    // 2. sessionStorageからユーザーが回答したIDリストを取得
+    let sessionAnsweredIds: number[] = [];
     try {
-      // (キー名は'answeredSurveyIds'に統一するのが分かりやすいです)
       const answeredIdsJSON = sessionStorage.getItem("answeredSurveyIds");
       if (answeredIdsJSON) {
-        answeredSurveyIds = JSON.parse(answeredIdsJSON);
+        sessionAnsweredIds = JSON.parse(answeredIdsJSON);
       }
     } catch (e) {
       console.error(
@@ -163,13 +167,19 @@ export default function SurveysPage() {
       );
     }
 
-    // 2. dummySurveys の isAnswered フラグを、sessionStorage の情報で上書きします
+    // 3. 2つのリストを統合し、重複を除いた最終的な回答済みIDリストを作成
+    const allAnsweredIds = new Set([
+      ...initialAnsweredIds,
+      ...sessionAnsweredIds,
+    ]);
+
+    // 4. 最終的なIDリストを元に、各アンケートのisAnsweredを決定
     const updatedSurveys = dummySurveys.map((survey) => ({
       ...survey,
-      isAnswered: answeredSurveyIds.includes(survey.id),
+      isAnswered: allAnsweredIds.has(survey.id),
     }));
 
-    // 3. 状態が更新されたアンケートリストを state にセットします
+    // 5. 状態が更新されたアンケートリストを state にセット
     setSurveys(updatedSurveys);
   }, []); // この処理はページが最初に読み込まれた時に一度だけ実行されます
 
