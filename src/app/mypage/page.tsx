@@ -1,7 +1,7 @@
 // src/app/mypage/page.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Menubar from "@/components/ui/menubar";
@@ -21,10 +21,12 @@ const ICON = {
 
 const IMG = {
   avatar: "/icons/icon_image_01.svg",
+  qrCode: "/images/app_qr.png",
 };
 
 export default function ProfilePage() {
   const hasNewNotification = true;
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-white">
@@ -70,13 +72,14 @@ export default function ProfilePage() {
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Link
                 href="/profile-edit"
-                className="inline-flex items-center justify-center rounded-[7px] border border-brand-blue bg-white px-3 py-2 text-[12px] font-bold text-brand-blue"
+                className="inline-flex items-center justify-center rounded-[7px] border border-brand-blue bg-white px-3 py-2 text-[12px] font-bold text-brand-blue transition-colors hover:bg-brand-blue hover:text-white"
               >
                 プロフィールを編集
               </Link>
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-[7px] border border-brand-blue bg-white px-3 py-2 text-[12px] font-bold text-brand-blue"
+                onClick={() => setIsShareModalOpen(true)}
+                className="inline-flex items-center justify-center rounded-[7px] border border-brand-blue bg-white px-3 py-2 text-[12px] font-bold text-brand-blue transition-colors hover:bg-brand-blue hover:text-white"
               >
                 プロフィールをシェア
               </button>
@@ -173,6 +176,28 @@ export default function ProfilePage() {
       </div>
 
       <Menubar active="mypage" />
+
+      {isShareModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-text-secondary/10 backdrop-blur-sm"
+          onClick={() => setIsShareModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 text-center shadow-xl flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="my-4 p-2 border-4 border-gray-200 rounded-lg">
+              <Image
+                src={IMG.qrCode}
+                alt="QRコード"
+                width={160}
+                height={160}
+              />
+            </div>
+            <p className="text-sm font-semibold text-gray-700">QRコードをシェアしてまちとつながろう！</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
