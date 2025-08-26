@@ -24,8 +24,9 @@ const dummySurveys: Survey[] = [
   {
     id: 1,
     targetAudience: "myTOKYOGAS会員限定",
-    title: "子育て交流イベントに関するアンケート",
-    description: "子育てをサポートするイベントで参加したいものを教えてください。",
+    title: "TOMOSUアプリの体験について",
+    description:
+      "PAPA'Sが本気で作ったアプリについてあなたの感想を教えてください。",
     deadline: "2025年9月1日",
     points: 100,
     isAnswered: false,
@@ -87,18 +88,40 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
             </span>
             {survey.isAnswered && (
               <div className="text-green-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
             )}
           </div>
           <h3 className="mt-2 font-bold text-text-primary">{survey.title}</h3>
-          <p className="mt-1 text-sm text-gray-600 line-clamp-2">{survey.description}</p>
+          <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+            {survey.description}
+          </p>
         </div>
         <div className="flex-shrink-0 text-gray-400">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </div>
       </div>
@@ -119,7 +142,9 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
 
 // --- メインページコンポーネント ---
 export default function SurveysPage() {
-  const [activeTab, setActiveTab] = useState<"all" | "unanswered" | "answered">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "unanswered" | "answered">(
+    "all"
+  );
   const [surveys, setSurveys] = useState<Survey[]>([]);
 
   useEffect(() => {
@@ -138,7 +163,8 @@ export default function SurveysPage() {
   }, [activeTab, surveys]);
 
   // タブボタン用の共通スタイルを変数として定義
-  const tabBaseStyle = "py-3 text-center text-sm font-semibold transition-colors";
+  const tabBaseStyle =
+    "py-3 text-center text-sm font-semibold transition-colors";
   const activeTabStyle = "border-b-2 border-brand-blue text-brand-blue";
   const inactiveTabStyle = "border-b-2 border-transparent text-text-secondary";
 
@@ -152,7 +178,12 @@ export default function SurveysPage() {
       <header className="flex-shrink-0 bg-white shadow-sm">
         <div className="flex items-center justify-between p-2 h-12">
           <Link href="/home" className="p-2">
-            <Image src="/icons/arrow_left.svg" alt="戻る" width={24} height={24} />
+            <Image
+              src="/icons/arrow_left.svg"
+              alt="戻る"
+              width={24}
+              height={24}
+            />
           </Link>
           <h1 className="font-bold text-base absolute left-1/2 -translate-x-1/2">
             まちのアンケート
@@ -162,19 +193,25 @@ export default function SurveysPage() {
         <nav className="grid grid-cols-3">
           <button
             onClick={() => setActiveTab("all")}
-            className={`${tabBaseStyle} ${activeTab === "all" ? activeTabStyle : inactiveTabStyle}`}
+            className={`${tabBaseStyle} ${
+              activeTab === "all" ? activeTabStyle : inactiveTabStyle
+            }`}
           >
             すべて
           </button>
           <button
             onClick={() => setActiveTab("unanswered")}
-            className={`${tabBaseStyle} ${activeTab === "unanswered" ? activeTabStyle : inactiveTabStyle}`}
+            className={`${tabBaseStyle} ${
+              activeTab === "unanswered" ? activeTabStyle : inactiveTabStyle
+            }`}
           >
             未回答
           </button>
           <button
             onClick={() => setActiveTab("answered")}
-            className={`${tabBaseStyle} ${activeTab === "answered" ? activeTabStyle : inactiveTabStyle}`}
+            className={`${tabBaseStyle} ${
+              activeTab === "answered" ? activeTabStyle : inactiveTabStyle
+            }`}
           >
             回答済
           </button>
@@ -189,7 +226,11 @@ export default function SurveysPage() {
                 <SurveyCardContent survey={survey} />
               </div>
             ) : (
-              <Link key={survey.id} href={`/surveys/${survey.id}`} className="block">
+              <Link
+                key={survey.id}
+                href={`/surveys/${survey.id}`}
+                className="block"
+              >
                 <SurveyCardContent survey={survey} />
               </Link>
             )
