@@ -38,7 +38,7 @@ export default function Loading() {
       {/* flex-1: 親要素(flex-col)の残りの空間をすべて埋める */}
       <div className="flex flex-1 flex-col items-center justify-center">
         <p className="text-xl font-semibold text-gray-700 animate-pulse mb-8">
-          あなたの街を作っています...
+          あなたのまちをつくっています...
         </p>
         <div className="text-center">
           {/* アニメーションを適用するラッパー */}
