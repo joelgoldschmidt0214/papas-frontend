@@ -2,8 +2,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Menubar from "@/components/ui/menubar";
+import { getSurveyStatistics, getSurveyComments, type SurveyStatistics, type SurveyCommentsResponse } from "@/lib/api/surveys";
 
 // --- 型定義 ---
 type UserAnswer = {
@@ -11,24 +13,17 @@ type UserAnswer = {
   comment: string;
 }
 
-type OtherComment = {
-  id: number;
-  choice: 'agree' | 'disagree';
-  comment: string;
-};
-
-const dummyOtherComments: OtherComment[] = [
-  { id: 1, choice: 'agree', comment: "ちょっとお金かかっても、安心して子どもを連れて行ける場所ならアリだと思う！" },
-  { id: 2, choice: 'agree', comment: "無料だと人が多すぎて落ち着かないし…有料のほうがゆったり使えそう😊" },
-  { id: 3, choice: 'disagree', comment: "子育てってお金かかるから…交流スペースくらいは無料で気軽に行ける場所にしてほしい！" },
-  { id: 4, choice: 'agree', comment: "お金払った分、サービスもちゃんとしてるなら納得かな！" },
-  { id: 5, choice: 'agree', comment: "ちょっと有料でも、子どもの遊び場がキレイで安全なら安心して通える✨" },
-  { id: 6, choice: 'disagree', comment: "せっかく交流の場なのに、お金の心配があると行きづらいと思うなあ" },
-];
+// ダミーデータを削除して、APIから取得したデータを使用
 
 // --- メインページコンポーネント ---
 export default function SurveyResultsPage() {
   const [userAnswer, setUserAnswer] = useState<UserAnswer | null>(null);
+  const [surveyStats, setSurveyStats] = useState<SurveyStatistics | null>(null);
+  const [surveyComments, setSurveyComments] = useState<SurveyCommentsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const params = useParams();
+  const surveyId = Number(params?.id);
 
   useEffect(() => {
     const savedAnswer = sessionStorage.getItem('surveyAnswer');
@@ -37,6 +32,37 @@ export default function SurveyResultsPage() {
       sessionStorage.removeItem('surveyAnswer');
     }
   }, []);
+
+  useEffect(() => {
+    if (surveyId) {
+      fetchSurveyData();
+    }
+  }, [surveyId]);
+
+  const fetchSurveyData = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // 集計データとコメントデータを並行取得
+      const [stats, comments] = await Promise.all([
+        getSurveyStatistics(surveyId),
+        getSurveyComments(surveyId),
+      ]);
+      
+      setSurveyStats(stats);
+      setSurveyComments(comments);
+    } catch (err) {
+      console.error('Failed to fetch survey data:', err);
+      setError('データの取得に失敗しました');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 割合の計算
+  const agreePercentage = surveyStats?.choice_statistics?.agree?.percentage || 0;
+  const disagreePercentage = surveyStats?.choice_statistics?.disagree?.percentage || 0;
 
   return (
     <div
@@ -56,18 +82,41 @@ export default function SurveyResultsPage() {
           </div>
         </div>
         <div className="mt-8">
-          <div className="flex justify-between px-2 text-3xl font-bold">
-            <span className="text-component-accent">82%</span>
-            <span className="text-brand-blue">18%</span>
-          </div>
-          <div className="mt-2 flex h-4 w-full overflow-hidden rounded-full bg-gray-200">
-            <div className="bg-component-accent" style={{ width: '82%' }}></div>
-            <div className="bg-brand-secondary" style={{ width: '18%' }}></div>
-          </div>
-          <div className="mt-2 flex justify-between px-2">
-            <span className="text-sm font-bold text-component-accent">賛成</span>
-            <span className="text-sm font-bold text-brand-blue">反対</span>
-          </div>
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">集計データを読み込み中...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <p className="text-red-500">{error}</p>
+              <button 
+                onClick={fetchSurveyData}
+                className="mt-2 px-4 py-2 bg-brand-blue text-white rounded"
+              >
+                再試行
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-between px-2 text-3xl font-bold">
+                <span className="text-component-accent">{Math.round(agreePercentage)}%</span>
+                <span className="text-brand-blue">{Math.round(disagreePercentage)}%</span>
+              </div>
+              <div className="mt-2 flex h-4 w-full overflow-hidden rounded-full bg-gray-200">
+                <div className="bg-component-accent" style={{ width: `${agreePercentage}%` }}></div>
+                <div className="bg-brand-secondary" style={{ width: `${disagreePercentage}%` }}></div>
+              </div>
+              <div className="mt-2 flex justify-between px-2">
+                <span className="text-sm font-bold text-component-accent">賛成</span>
+                <span className="text-sm font-bold text-brand-blue">反対</span>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-600">
+                  総回答数: {surveyStats?.total_responses || 0}件
+                </p>
+              </div>
+            </>
+          )}
         </div>
         <div className="mt-10 mb-4 text-center">
           <h2 className="font-bold text-text-primary">みんなの声</h2>
@@ -100,24 +149,42 @@ export default function SurveyResultsPage() {
             </div>
           )}
           
-          {dummyOtherComments.map((item) => (
+          {surveyComments?.comments.map((comment) => (
             <div
-              key={item.id}
+              key={comment.response_id}
               className="rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700"
             >
               <div className="flex items-center space-x-2 mb-2">
-                  <span
-                   className={`
-                     rounded-full px-2 py-0.5 text-xs font-bold
-                     ${item.choice === 'agree' ? 'bg-component-accent text-white' : 'bg-brand-secondary text-brand-blue'}
-                   `}
-                 >
-                   {item.choice === 'agree' ? '賛成' : '反対'}
-                 </span>
+                <span
+                  className={`
+                    rounded-full px-2 py-0.5 text-xs font-bold
+                    ${comment.choice === 'agree' ? 'bg-component-accent text-white' : 'bg-brand-secondary text-brand-blue'}
+                  `}
+                >
+                  {comment.choice === 'agree' ? '賛成' : '反対'}
+                </span>
+                {comment.is_anonymous && (
+                  <span className="text-xs text-gray-500">匿名</span>
+                )}
               </div>
-              <p className="leading-relaxed">{item.comment}</p>
+              <p className="leading-relaxed">{comment.comment}</p>
+              <div className="mt-2 text-xs text-gray-400">
+                {new Date(comment.submitted_at).toLocaleDateString('ja-JP', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </div>
             </div>
-          ))}
+          )) || []}
+          
+          {surveyComments?.comments.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <p>まだコメントがありません</p>
+            </div>
+          )}
         </div>
       </main>
       
