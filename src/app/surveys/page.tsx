@@ -24,9 +24,9 @@ const dummySurveys: Survey[] = [
   {
     id: 1,
     targetAudience: "myTOKYOGAS会員限定",
-    title: "子育て交流イベントに関するアンケート",
+    title: "TOMOSUアプリの体験について",
     description:
-      "子育てをサポートするイベントで参加したいものを教えてください。",
+      "PAPA'Sが本気で作ったアプリについてあなたの感想を教えてください。",
     deadline: "2025年9月1日",
     points: 100,
     isAnswered: false,
