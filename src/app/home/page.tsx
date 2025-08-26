@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MenubarWithCompose from "@/components/ui/MenubarWithCompose";
@@ -14,6 +14,20 @@ const IMG = {
   compose: "/icons/btn-compose.svg",
   notification: "/icons/icon_notification.svg",
 };
+
+/** バナー画像の配列 */
+const BANNER_IMAGES = [
+  "/images/banner_home.png",
+  "/images/banner_home_02.png",
+  "/images/banner_home_03.png",
+];
+
+/** バナーリンクの配列 */
+const BANNER_LINKS = [
+  "https://members.tokyo-gas.co.jp/contents/public/news/list.html",
+  "https://members.tokyo-gas.co.jp/",
+  "https://home.tokyo-gas.co.jp/gas_power/ad/smartaction/campaign_summer2025.html?_gl=1*1ufrqec*_ga*MTA0NzYxMzkzNy4xNzUwMjUwMjk0*_ga_SGHRVK70WY*czE3NTYyMjQyMTkkbzE5JGcxJHQxNzU2MjI0OTMxJGo1OSRsMCRoMA..*_ga_LM5MP4QZ0X*czE3NTYyMjQ4NjgkbzQkZzEkdDE3NTYyMjQ5MzEkajU5JGwwJGgw"
+];
 
 /** 吹き出し（共通） */
 function Bubble({
@@ -53,6 +67,29 @@ function Bubble({
 
 export default function Mypage() {
   const hasNewNotification = true;
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setCurrentBannerIndex((prevIndex) => prevIndex + 1);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // トランジション終了後の処理
+  useEffect(() => {
+    if (currentBannerIndex === BANNER_IMAGES.length + 1) {
+      // 最後の複製画像に到達したら、最初の実画像にジャンプ
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentBannerIndex(1);
+        setTimeout(() => setIsTransitioning(true), 50);
+      }, 500);
+    }
+  }, [currentBannerIndex]);
 
   return (
     <div
@@ -108,67 +145,114 @@ export default function Mypage() {
             </div>
           </div>
         </div>
-        <div className="my-3 h-[0.5px] w-full bg-black/10" />
+        <div className="my-3 h-[0.5px] w-full" />
       </header>
 
       {/* --- メインコンテンツ（スクロール可能） --- */}
       <main className="flex-1 overflow-y-auto">
         <section className="w-full">
-          <a
-            href="https://members.tokyo-gas.co.jp/contents/public/news/list.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TOKYO GAS からのお知らせをチェック！"
-          >
-            <Image
-              src={IMG.banner}
-              alt="TOKYO GAS からのお知らせをチェック！"
-              width={393}
-              height={65}
-              sizes="(max-width: 440px) 100vw, 440px"
-              className="block h-auto w-full"
-              priority
-            />
-          </a>
-          <div className="my-3 h-[0.5px] w-full bg-black/10" />
+          <div className="relative overflow-hidden border-t border-b border-gray-200">
+            <div 
+              className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
+              style={{ transform: `translateX(-${currentBannerIndex * 100}%)` }}
+            >
+              {/* 最後の画像を最初に複製 */}
+              <a
+                href={BANNER_LINKS[BANNER_IMAGES.length - 1]}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TOKYO GAS からのお知らせをチェック！"
+                className="w-full flex-shrink-0"
+              >
+                <Image
+                  src={BANNER_IMAGES[BANNER_IMAGES.length - 1]}
+                  alt="TOKYO GAS からのお知らせをチェック！"
+                  width={393}
+                  height={65}
+                  sizes="(max-width: 440px) 100vw, 440px"
+                  className="block h-auto w-full"
+                />
+              </a>
+
+              {/* 実際のバナー画像 */}
+              {BANNER_IMAGES.map((bannerSrc, index) => (
+                <a
+                  key={index}
+                  href={BANNER_LINKS[index]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TOKYO GAS からのお知らせをチェック！"
+                  className="w-full flex-shrink-0"
+                >
+                  <Image
+                    src={bannerSrc}
+                    alt="TOKYO GAS からのお知らせをチェック！"
+                    width={393}
+                    height={65}
+                    sizes="(max-width: 440px) 100vw, 440px"
+                    className="block h-auto w-full"
+                    priority={index === 0}
+                  />
+                </a>
+              ))}
+
+              {/* 最初の画像を最後に複製 */}
+              <a
+                href={BANNER_LINKS[0]}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TOKYO GAS からのお知らせをチェック！"
+                className="w-full flex-shrink-0"
+              >
+                <Image
+                  src={BANNER_IMAGES[0]}
+                  alt="TOKYO GAS からのお知らせをチェック！"
+                  width={393}
+                  height={65}
+                  sizes="(max-width: 440px) 100vw, 440px"
+                  className="block h-auto w-full"
+                />
+              </a>
+            </div>
+          </div>
         </section>
 
-        <div className="relative w-full -translate-y-[6px]">
+        <div className="relative w-full overflow-hidden">
           <Image
             src={IMG.bg}
             alt="まちの背景イラスト"
             width={1170}
             height={1800}
             sizes="(max-width: 440px) 100vw, 440px"
-            className="block h-auto w-full"
+            className="block h-auto w-full relative -top-12"
             priority
           />
           <Bubble
             href="/notifications"
             text="東京ガスからのお知らせです。"
             left="76%"
-            top="15%"
+            top="10%"
             width="180px"
           />
           <Bubble
             href="/notifications"
             text="メンテナンスのお知らせ♪"
             left="68%"
-            top="38%"
+            top="31%"
             width="160px"
           />
           <Bubble
             href="/timeline?tab=イベント"
             text="9/6のイベントをチェック！"
             left="32%"
-            top="48%"
+            top="40%"
             width="180px"
           />
           <Bubble
             href="/timeline?tab=子育て"
             text="保育園情報が更新されました。"
             left="54%"
-            top="62%"
+            top="56%"
             width="180px"
           />
         </div>

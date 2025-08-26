@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,10 @@ const ICONS = {
 export default function Login() {
   const [showPwd, setShowPwd] = React.useState(false);
   const router = useRouter();
+
+  const [loginId, setLoginId] = useState("tomosu@tech0.com");
+  const [password, setPassword] = useState("tokyo-gas");
+
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     // TODO: バリデーション & API 連携
@@ -35,7 +40,7 @@ export default function Login() {
       <header className="w-full" aria-label="ナビゲーション">
         <div className={`${container} relative`}>
           <Link
-            href="/home"
+            href="/top"
             aria-label="前の画面へ戻る"
             className="absolute left-0 top-4 block -m-2 p-2"
           >
@@ -62,6 +67,8 @@ export default function Login() {
               inputMode="email"
               autoComplete="username"
               placeholder="メールアドレス / 初期ID"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
               className={`${fieldBase} ${fieldFocus} border-[#ebebeb]`}
             />
 
@@ -77,6 +84,8 @@ export default function Login() {
                   type={showPwd ? "text" : "password"}
                   autoComplete="current-password"
                   placeholder="パスワード"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className={`${fieldBase} ${fieldFocus} border-[#ebebeb] pr-10`}
                 />
                 <button
