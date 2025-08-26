@@ -72,7 +72,7 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
       className={`
         group relative rounded-lg border border-gray-200 bg-white p-4 shadow-sm
         transition-all duration-200 group-hover:shadow-md
-        ${survey.isAnswered ? "opacity-70" : ""}
+        ${survey.isAnswered ? "opacity-50" : ""}
       `}
     >
       <div className="flex items-start justify-between">
@@ -87,7 +87,7 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
               {survey.targetAudience}
             </span>
             {survey.isAnswered && (
-              <div className="text-green-500">
+              <div className="text-brand-blue">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -127,14 +127,20 @@ const SurveyCardContent: FC<{ survey: Survey }> = ({ survey }) => {
       </div>
       <div className="mt-4 flex items-center justify-between">
         <p className="text-xs text-gray-500">締め切り {survey.deadline}まで</p>
-        <span
-          className={`
-            rounded-full border border-component-accent bg-white
-            px-2 py-0.5 text-xs font-bold text-component-accent
-          `}
-        >
-          パッチョポイント : {survey.points}pt
-        </span>
+        {survey.isAnswered ? (
+          <span className="rounded-full border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-500">
+            パッチョポイント獲得済み
+          </span>
+        ) : (
+          <span
+            className={`
+              rounded-full border border-component-accent bg-white
+              px-2 py-0.5 text-xs font-bold text-component-accent
+            `}
+          >
+            パッチョポイント : {survey.points}pt
+          </span>
+        )}
       </div>
     </div>
   );
@@ -148,13 +154,17 @@ export default function SurveysPage() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
 
   useEffect(() => {
-    // 1. sessionStorageから回答済みの全回答データを取得します
-    let answeredSurveyIds: number[] = [];
+    // 1. dummySurveysで元々回答済みのIDリストを取得
+    const initialAnsweredIds = dummySurveys
+      .filter((survey) => survey.isAnswered)
+      .map((survey) => survey.id);
+
+    // 2. sessionStorageからユーザーが回答したIDリストを取得
+    let sessionAnsweredIds: number[] = [];
     try {
-      // (キー名は'answeredSurveyIds'に統一するのが分かりやすいです)
       const answeredIdsJSON = sessionStorage.getItem("answeredSurveyIds");
       if (answeredIdsJSON) {
-        answeredSurveyIds = JSON.parse(answeredIdsJSON);
+        sessionAnsweredIds = JSON.parse(answeredIdsJSON);
       }
     } catch (e) {
       console.error(
@@ -163,13 +173,19 @@ export default function SurveysPage() {
       );
     }
 
-    // 2. dummySurveys の isAnswered フラグを、sessionStorage の情報で上書きします
+    // 3. 2つのリストを統合し、重複を除いた最終的な回答済みIDリストを作成
+    const allAnsweredIds = new Set([
+      ...initialAnsweredIds,
+      ...sessionAnsweredIds,
+    ]);
+
+    // 4. 最終的なIDリストを元に、各アンケートのisAnsweredを決定
     const updatedSurveys = dummySurveys.map((survey) => ({
       ...survey,
-      isAnswered: answeredSurveyIds.includes(survey.id),
+      isAnswered: allAnsweredIds.has(survey.id),
     }));
 
-    // 3. 状態が更新されたアンケートリストを state にセットします
+    // 5. 状態が更新されたアンケートリストを state にセット
     setSurveys(updatedSurveys);
   }, []); // この処理はページが最初に読み込まれた時に一度だけ実行されます
 
@@ -242,27 +258,29 @@ export default function SurveysPage() {
 
       <main className="flex-1 space-y-4 overflow-y-auto p-4">
         {filteredSurveys.length > 0 ? (
-          filteredSurveys.map((survey) =>
-            survey.isAnswered ? (
-              // 回答済みの場合は結果ページへリンク
-              <Link
-                key={survey.id}
-                href={`/surveys/${survey.id}/results`}
-                className="block"
-              >
-                <SurveyCardContent survey={survey} />
-              </Link>
-            ) : (
-              // 未回答の場合は回答ページへリンク
-              <Link
-                key={survey.id}
-                href={`/surveys/${survey.id}`}
-                className="block"
-              >
-                <SurveyCardContent survey={survey} />
-              </Link>
-            )
-          )
+          filteredSurveys.map((survey) => {
+            // MVPの仕様: survey.idが1の場合のみクリック可能
+            const isClickable = survey.id === 1;
+
+            if (isClickable) {
+              // --- クリック可能なカード (id: 1) ---
+              const href = survey.isAnswered
+                ? `/surveys/${survey.id}/results`
+                : `/surveys/${survey.id}`;
+              return (
+                <Link key={survey.id} href={href} className="block">
+                  <SurveyCardContent survey={survey} />
+                </Link>
+              );
+            } else {
+              // --- クリック不可能なカード (id > 1) ---
+              return (
+                <div key={survey.id}>
+                  <SurveyCardContent survey={survey} />
+                </div>
+              );
+            }
+          })
         ) : (
           <div className="pt-10 text-center text-gray-500">
             <p>表示するアンケートはありません。</p>
