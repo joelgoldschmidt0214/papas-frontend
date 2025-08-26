@@ -124,9 +124,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("APIのURLが設定されていません。");
       }
 
-      const response = await fetch(
-        `${baseUrl}/api/v1/posts/timeline?skip=0&limit=20`
-      );
+      const response = await fetch(`${baseUrl}/api/v1/posts/timeline`);
 
       if (!response.ok) {
         throw new Error(
