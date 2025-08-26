@@ -6,6 +6,7 @@ import {
   useState,
   ReactNode,
   useCallback,
+  useEffect,
 } from "react";
 
 // --- 共通の型定義 ---
@@ -105,7 +106,32 @@ type PostContextType = {
 const PostContext = createContext<PostContextType | undefined>(undefined);
 
 export const PostProvider = ({ children }: { children: ReactNode }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    // このコンポーネントが最初にマウントされた時（＝セッション開始時）に一度だけ実行
+    console.log(
+      "Session started. Clearing survey answers from sessionStorage."
+    );
+    sessionStorage.removeItem("answeredSurveyIds");
+    sessionStorage.removeItem("tempUserAnswer");
+  }, []);
+
+  // --- Stateの定義 ---
+  const [posts, setPosts] = useState<Post[]>(() => {
+    // 初期化時にsessionStorageから追加投稿を読み込む
+    try {
+      if (typeof window !== "undefined") {
+        const addedPostsJSON = sessionStorage.getItem("addedPosts");
+        if (addedPostsJSON) {
+          console.log("Found added posts in sessionStorage.");
+          return JSON.parse(addedPostsJSON);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to read posts from sessionStorage", error);
+    }
+    return []; // キャッシュがなければ空配列で初期化
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

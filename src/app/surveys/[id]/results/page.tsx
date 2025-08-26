@@ -58,7 +58,6 @@ export default function SurveyResultsPage() {
     const tempAnswerJSON = sessionStorage.getItem("tempUserAnswer");
     if (tempAnswerJSON) {
       setUserAnswer(JSON.parse(tempAnswerJSON));
-      sessionStorage.removeItem("tempUserAnswer");
     }
 
     // APIからデータを取得する
