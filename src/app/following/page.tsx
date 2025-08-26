@@ -37,7 +37,7 @@ const dummyFollowingData: FollowedUser[] = [
   {
     id: 3,
     username: '豊洲市場のりじちょー',
-    bio: '遠くに行きければみんなで進め🔥',
+    bio: '遠くに行きたければみんなで進め🔥',
     profileImageUrl: '/icons/icon_image_01.svg',
     isFollowing: true,
   },
